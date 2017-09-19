@@ -1,6 +1,6 @@
 from PIL import Image
 from scipy.misc import imsave
-import numpy
+import numpy as np
 
 def bin_array(numpy_array, threshold=200):
     """Binarize a numpy array."""
@@ -16,6 +16,6 @@ def binarize(filename, threshold):
     """Binarize an image """
     file = Image.open(filename)
     file = file.convert('L') # 'L' is monochrome, '1' is black and white
-    file = numpy.array(file)
+    file = np.array(file)
     file = bin_array(file, threshold)
     return file
