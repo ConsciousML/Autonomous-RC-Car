@@ -1,0 +1,5 @@
+*.pyc
+*.jpg
+server/config
+client/config
+html_server/config
