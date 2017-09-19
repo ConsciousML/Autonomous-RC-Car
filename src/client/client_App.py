@@ -4,7 +4,10 @@ from Tkinter import *
 from socket import *      # Import necessary modules
 import numpy
 import cv2
+import os
 
+
+os.system('xset r off')
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
 top = Tk()   # Create a top window
@@ -18,10 +21,11 @@ ADDR = (HOST, PORT)
 tcpCliSock = socket(AF_INET, SOCK_STREAM)   # Create a socket
 tcpCliSock.connect(ADDR)                    # Connect with the server
 
-a_p = False
-d_p = False
-s_p = False
-w_p = False
+class Status:
+    a_p = False
+    d_p = False
+    s_p = False
+    w_p = False
 
 def recvall(sock, count):
     buf = b''
@@ -52,8 +56,8 @@ top.bin("<<GetImg>>", get_image)
 top.event_generate("<<GetImg>>", when="tail")
 '''
 
-def process_dir(dir):
-    print dir
+def process_dir(dir, bool):
+    print dir, bool
     tcpCliSock.send(dir)
     get_img(dir)
 
@@ -62,46 +66,42 @@ def process_dir(dir):
 # car move forward.
 # =============================================================================
 def forward_fun(event):
-    global w_p
-    if w_p:
+    if Status.w_p:
+        print "Not doing"
         return
-    w_p = True
-    process_dir("forward")
+    Status.w_p = True
+    process_dir("forward", Status.w_p)
 
 def backward_fun(event):
-    global s_p
-    if s_p:
+    if Status.s_p:
+        print "Not doing"
         return
-    s_p = True
-    process_dir("backward")
+    Status.s_p = True
+    process_dir("backward", Status.s_p)
 
 def left_fun(event):
-    global a_p
-    if a_p:
+    if Status.a_p:
+        print "Not doing"
         return
-    a_p = True
-    process_dir("left")
+    Status.a_p = True
+    process_dir("left", Status.a_p)
 
 def right_fun(event):
-    global d_p
-    if d_p:
+    if Status.d_p:
+        print "Not doing"
         return
-    d_p = True
-    process_dir("right")
+    Status.d_p = True
+    process_dir("right", Status.d_p)
 
 def stop_fun(event):
-        global w_p
-        global s_p
-        w_p = False
-        s_p = False
-	process_dir('stop')
+        Status.w_p = False
+        Status.s_p = False
+	process_dir('stop', Status.w_p)
 
 def home_fun(event):
-        global a_p
-        global d_p
-        a_p = False
-        d_p = False
-	process_dir('home')
+        Status.a_p = False
+        Status.d_p = False
+	process_dir('home', Status.a_p)
 
 def x_increase(event):
 	process_dir('x+')
