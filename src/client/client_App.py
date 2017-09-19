@@ -77,17 +77,17 @@ def backward_fun(event):
     process_dir("backward")
 
 def left_fun(event):
-    global s_a
-    if s_a:
+    global a_p
+    if a_p:
         return
-    s_a = True
+    a_p = True
     process_dir("left")
 
 def right_fun(event):
-    global s_d
-    if s_d:
+    global d_p
+    if d_p:
         return
-    s_d = True
+    d_p = True
     process_dir("right")
 
 def stop_fun(event):
