@@ -2,14 +2,16 @@
 import PCA9685 as servo
 import time                # Import necessary modules
 
+last_dir = 0
+
 def Map(x, in_min, in_max, out_min, out_max):
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 def setup(busnum=None):
 	global leftPWM, rightPWM, homePWM, pwm
-	leftPWM = 400
+	leftPWM = 350
 	homePWM = 450
-	rightPWM = 500
+        rightPWM = 550
 	offset =0
 	try:
 		for line in open('config'):
@@ -27,11 +29,13 @@ def setup(busnum=None):
 	pwm.frequency = 60
 
 # ==========================================================================================
-# Control the servo connected to channel 0 of the servo control board, so as to make the 
+# Control the servo connected to channel 0 of the servo control board, so as to make the
 # car turn left.
 # ==========================================================================================
 def turn_left():
 	global leftPWM
+        global last_dir
+        last_dir = -1
 	pwm.write(0, 0, leftPWM)  # CH0
 
 # ==========================================================================================
@@ -39,6 +43,8 @@ def turn_left():
 # ==========================================================================================
 def turn_right():
 	global rightPWM
+        global last_dir
+        last_dir = 1
 	pwm.write(0, 0, rightPWM)
 
 # ==========================================================================================
@@ -51,7 +57,13 @@ def turn(angle):
 
 def home():
 	global homePWM
-	pwm.write(0, 0, homePWM)
+        global last_dir
+        off = 0
+        if last_dir == -1
+            off = 10
+        elif last_di == 1
+            off = -10
+	pwm.write(0, 0, homePWM + off)
 
 def calibrate(x):
 	pwm.write(0, 0, 450+x)
