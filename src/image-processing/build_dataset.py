@@ -2,7 +2,10 @@ import parse
 import numpy as np
 import filters
 
-files = parse.get_filenames("client/pictures/", "test7-parfait")
+FOLDER = "client/pictures/"
+DATASET_NAME = "test7-parfait/"
+
+files = parse.get_filenames(FOLDER + DATASET_NAME)
 binary = filters.binarize(files[0], 200)
 dataset = np.ones((len(files), binary.size))
 labels = np.ones(len(files))

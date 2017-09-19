@@ -3,15 +3,11 @@ import glob
 import re
 import sys
 
-FOLDER = "client/pictures/"
-DATASET_NAME = "test7-parfait/"
 DEBUG = False
-
 dic = {"forward": 0, "left": 1, "right": 2}
 
 # Search for all .jpg files in a specified folder
-def get_filenames(FOLDER, DATASET_NAME):
-    path = FOLDER + DATASET_NAME
+def get_filenames(path):
     if DEBUG:
         print("Opening folder %s" % path)
     filenames = []
