@@ -13,19 +13,14 @@ ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'ho
 top = Tk()   # Create a top window
 top.title('Sunfounder Raspberry Pi Smart Video Car')
 
-HOST = '172.20.10.11'    # Server(Raspberry Pi) IP address
+#HOST = '172.20.10.11'    # Thibaut (iPhone) IP address
+HOST = '192.168.43.46'    # Laure (Ionis's Down) IP address
 PORT = 21567
 BUFSIZ = 1024             # buffer size
 ADDR = (HOST, PORT)
 
 tcpCliSock = socket(AF_INET, SOCK_STREAM)   # Create a socket
 tcpCliSock.connect(ADDR)                    # Connect with the server
-
-class Status:
-    a_p = False
-    d_p = False
-    s_p = False
-    w_p = False
 
 def recvall(sock, count):
     buf = b''
@@ -45,7 +40,9 @@ def get_img(dir):
     stringData = recvall(tcpCliSock, int(length))
     img = numpy.fromstring(stringData, dtype='uint8')
     imgdec = cv2.imdecode(img, 1)
-    cv2.imwrite(FOLDER + str(Counter.i) + dir + ".jpg", imgdec)
+    if dir == "home":
+        dir = "forward"
+    cv2.imwrite(FOLDER + str(Counter.i).zfill(3) + dir + ".jpg", imgdec)
     Counter.i += 1
 
 '''
@@ -56,8 +53,8 @@ top.bin("<<GetImg>>", get_image)
 top.event_generate("<<GetImg>>", when="tail")
 '''
 
-def process_dir(dir, bool):
-    print dir, bool
+def process_dir(dir):
+    print dir
     tcpCliSock.send(dir)
     get_img(dir)
 
@@ -66,42 +63,22 @@ def process_dir(dir, bool):
 # car move forward.
 # =============================================================================
 def forward_fun(event):
-    if Status.w_p:
-        print "Not doing"
-        return
-    Status.w_p = True
-    process_dir("forward", Status.w_p)
+    process_dir("forward")
 
 def backward_fun(event):
-    if Status.s_p:
-        print "Not doing"
-        return
-    Status.s_p = True
-    process_dir("backward", Status.s_p)
+    process_dir("backward")
 
 def left_fun(event):
-    if Status.a_p:
-        print "Not doing"
-        return
-    Status.a_p = True
-    process_dir("left", Status.a_p)
+    process_dir("left")
 
 def right_fun(event):
-    if Status.d_p:
-        print "Not doing"
-        return
-    Status.d_p = True
-    process_dir("right", Status.d_p)
+    process_dir("right")
 
 def stop_fun(event):
-        Status.w_p = False
-        Status.s_p = False
-	process_dir('stop', Status.w_p)
+    process_dir('stop')
 
 def home_fun(event):
-        Status.a_p = False
-        Status.d_p = False
-	process_dir('home', Status.a_p)
+    process_dir('home')
 
 def x_increase(event):
 	process_dir('x+')
@@ -124,6 +101,7 @@ def xy_home(event):
 # =============================================================================
 def quit_fun(event):
 	top.quit()
+	os.system('xset r on')
 	tcpCliSock.send('stop')
 	tcpCliSock.close()
 
