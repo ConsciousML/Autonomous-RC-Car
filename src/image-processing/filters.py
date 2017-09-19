@@ -18,7 +18,4 @@ def binarize(filename, threshold):
     file = file.convert('L') # 'L' is monochrome, '1' is black and white
     file = numpy.array(file)
     file = bin_array(file, threshold)
-    imsave('lol.jpg', file)
-
-binarize("client/pictures/test7-parfait/164forward.jpg", 210)
-
+    return file
