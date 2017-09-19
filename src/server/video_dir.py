@@ -87,6 +87,7 @@ def home_x_y():
 	#pwm.write(15, 0, Current_y)
 
 def calibrate(x,y):
+        x = x
 	#pwm.write(14, 0, (MaxPulse+MinPulse)/2+x)
 	#pwm.write(15, 0, (MaxPulse+MinPulse)/2+y)
 
