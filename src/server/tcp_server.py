@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import RP.GPIO as GPIO
+import RPi.GPIO as GPIO
 import video_dir
 import car_dir
 import motor
@@ -50,7 +50,7 @@ while True:
                 tcpCliSock.send(stringData);
 
 		data = ''
-	data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client.
+	        data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client.
 		# Analyze the command received and control the car accordingly.
 		if not data:
 			break

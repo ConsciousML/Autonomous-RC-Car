@@ -59,9 +59,9 @@ def home():
 	global homePWM
         global last_dir
         off = 0
-        if last_dir == -1
+        if last_dir == -1:
             off = 10
-        elif last_di == 1
+        elif last_dir == 1:
             off = -10
 	pwm.write(0, 0, homePWM + off)
 
