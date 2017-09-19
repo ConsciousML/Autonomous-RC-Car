@@ -3,6 +3,8 @@ import RP.GPIO as GPIO
 import video_dir
 import car_dir
 import motor
+import cv2
+import numpy
 from socket import *
 from time import ctime          # Import necessary modules
 
@@ -26,6 +28,8 @@ motor.setup(busnum=busnum)     # Initialize the Raspberry Pi GPIO connected to t
 video_dir.home_x_y()
 car_dir.home()
 
+cam = cv2.VideoCapture(0)
+
 while True:
 	print 'Waiting for connection...'
 	# Waiting for connection. Once receiving a connection, the function accept() returns a separate
@@ -35,8 +39,18 @@ while True:
 	print '...connected from :', addr     # Print the IP address of the client connected with the server.
 
 	while True:
+                ret, frame = cam.read()
+
+                encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
+                result, imgencode = cv2.imencode('.jpg', frame, encode_param)
+                data_f = numpy.array(imgencode)
+                stringData = data_f.tostring()
+
+                tcpCliSock.send(str(len(stringData)).ljust(16));
+                tcpCliSock.send(stringData);
+
 		data = ''
-		data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client.
+	data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client.
 		# Analyze the command received and control the car accordingly.
 		if not data:
 			break
