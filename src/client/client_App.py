@@ -23,7 +23,6 @@ d_p = False
 s_p = False
 w_p = False
 
-
 def recvall(sock, count):
     buf = b''
     while count:
@@ -66,7 +65,7 @@ def forward_fun(event):
     global w_p
     if w_p:
         return
-    a_p = True
+    w_p = True
     process_dir("forward")
 
 def backward_fun(event):
