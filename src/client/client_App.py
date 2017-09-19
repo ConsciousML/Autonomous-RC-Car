@@ -18,6 +18,12 @@ ADDR = (HOST, PORT)
 tcpCliSock = socket(AF_INET, SOCK_STREAM)   # Create a socket
 tcpCliSock.connect(ADDR)                    # Connect with the server
 
+a_p = False
+d_p = False
+s_p = False
+w_p = False
+
+
 def recvall(sock, count):
     buf = b''
     while count:
@@ -57,21 +63,45 @@ def process_dir(dir):
 # car move forward.
 # =============================================================================
 def forward_fun(event):
+    global w_p
+    if w_p:
+        return
+    a_p = True
     process_dir("forward")
 
 def backward_fun(event):
+    global s_p
+    if s_p:
+        return
+    s_p = True
     process_dir("backward")
 
 def left_fun(event):
+    global s_a
+    if s_a:
+        return
+    s_a = True
     process_dir("left")
 
 def right_fun(event):
+    global s_d
+    if s_d:
+        return
+    s_d = True
     process_dir("right")
 
 def stop_fun(event):
+        global w_p
+        global s_p
+        w_p = False
+        s_p = False
 	process_dir('stop')
 
 def home_fun(event):
+        global a_p
+        global d_p
+        a_p = False
+        d_p = False
 	process_dir('home')
 
 def x_increase(event):
