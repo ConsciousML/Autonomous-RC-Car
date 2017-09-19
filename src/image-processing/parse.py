@@ -5,9 +5,7 @@ import sys
 
 FOLDER = "client/pictures/"
 DATASET_NAME = "test7-parfait/"
-DEBUG = True
-
-file = FOLDER + DATASET_NAME + "168forward.jpg"
+DEBUG = False
 
 # Search for all .jpg files in a specified folder
 def get_filenames(FOLDER, DATASET_NAME):
@@ -45,5 +43,3 @@ def labelize(filename):
     else:
         print("*** Can't match filename with direction.")
         sys.exit(1)
-
-labelize(file)
