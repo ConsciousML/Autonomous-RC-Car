@@ -7,6 +7,8 @@ FOLDER = "client/pictures/"
 DATASET_NAME = "test7-parfait/"
 DEBUG = False
 
+dic = {"forward": 0, "left": 1, "right": 2}
+
 # Search for all .jpg files in a specified folder
 def get_filenames(FOLDER, DATASET_NAME):
     path = FOLDER + DATASET_NAME
@@ -39,7 +41,7 @@ def labelize(filename):
         dir = re.sub("\d+", "", dir)
         if DEBUG:
             print("dir is %s" % dir)
-        return dir
+        return dic[dir]
     else:
         print("*** Can't match filename with direction.")
         sys.exit(1)
