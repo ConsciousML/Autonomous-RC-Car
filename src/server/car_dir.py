@@ -62,7 +62,7 @@ def home():
         if last_dir == -1:
             off = 10
         elif last_dir == 1:
-            off = -10
+            off = -25
 	pwm.write(0, 0, homePWM + off)
 
 def calibrate(x):
