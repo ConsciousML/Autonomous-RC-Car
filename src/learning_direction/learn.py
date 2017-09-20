@@ -3,7 +3,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import pickle
 from sklearn.externals import joblib
-from sklearn import metrics
+# home coded
+import scoring
 # classifiers
 from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
@@ -26,14 +27,6 @@ clf = clf.fit(X_train, y_train)
 #f.close()
 
 y_pred = clf.predict(X_test)
-
-ff, fl, fr, lf, ll, lr, rf, rl, rr  = metrics.confusion_matrix(y_test, y_pred).ravel()
-n = len(y_test)
-print("FF: %04d FL: %04d FR: %04d" % (ff, fl, fr))
-print("LF: %04d LL: %04d LR: %04d" % (lf, ll, lr))
-print("RF: %04d RL: %04d RR: %04d" % (rf, rl, rr))
-print(metrics.classification_report(y_test, y_pred, target_names=["forward", "left", "right"]))
-acc = (ff + ll + rr) / n
-print(acc)
+scoring.show_confusion_matrix(y_test, y_pred)
 
 _ = joblib.dump(clf, CLF_FOLDER + CLF_NAME + ".joblib.pkl")
