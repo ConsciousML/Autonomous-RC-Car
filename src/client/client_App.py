@@ -13,14 +13,18 @@ ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'ho
 top = Tk()   # Create a top window
 top.title('Sunfounder Raspberry Pi Smart Video Car')
 
-HOST = '172.20.10.11'    # Thibaut (iPhone) IP address
-#HOST = '192.168.43.46'    # Laure (Ionis's Down) IP address
+#HOST = '172.20.10.11'    # Thibaut (iPhone) IP address
+HOST = '192.168.43.46'    # Laure (Ionis's Down) IP address
 PORT = 21567
 BUFSIZ = 1024             # buffer size
 ADDR = (HOST, PORT)
 
 tcpCliSock = socket(AF_INET, SOCK_STREAM)   # Create a socket
 tcpCliSock.connect(ADDR)                    # Connect with the server
+
+dira = 0
+
+dic_dir = {-1: "left", 0: "forward", 1: "right"}
 
 def recvall(sock, count):
     buf = b''
@@ -35,6 +39,8 @@ class Counter:
     i = 0
 
 def get_img(dir):
+    global dira
+
     FOLDER = "pictures/"
     length = recvall(tcpCliSock, 16)
     print 'rec len'
@@ -42,11 +48,9 @@ def get_img(dir):
     print 'rec img'
     img = numpy.fromstring(stringData, dtype='uint8')
     imgdec = cv2.imdecode(img, 1)
-    if dir == "home":
-        dir = "forward"
-    if dir not in ["stop", "speed"]:
-        cv2.imwrite(FOLDER + str(Counter.i).zfill(3) + dir + ".jpg", imgdec)
-        Counter.i += 1
+
+    cv2.imwrite(FOLDER + str(Counter.i).zfill(3) + dic_dir[dira] + ".jpg", imgdec)
+    Counter.i += 1
 
 '''
 def get_image():
@@ -72,15 +76,21 @@ def backward_fun(event):
     process_dir("backward")
 
 def left_fun(event):
+    global dira
+    dira = -1
     process_dir("left")
 
 def right_fun(event):
+    global dira
+    dira = 1
     process_dir("right")
 
 def stop_fun(event):
     process_dir('stop')
 
 def home_fun(event):
+    global dira
+    dira = 0
     process_dir('home')
 
 def x_increase(event):

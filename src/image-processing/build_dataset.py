@@ -4,9 +4,8 @@ import filters
 from sklearn import svm
 
 FOLDER = "client/pictures/"
-DATASET_NAME = "test7-parfait/"
 
-files = parse.get_filenames(FOLDER + DATASET_NAME)
+files = parse.get_filenames(FOLDER)
 size = filters.binarize(files[0], 200).size
 dataset = np.ones((len(files), size))
 labels = np.ones(len(files))
