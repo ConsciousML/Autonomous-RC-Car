@@ -1,6 +1,7 @@
 *.pyc
 *.jpg
 *.swp
+*.swo
 server/config
 client/config
 html_server/config

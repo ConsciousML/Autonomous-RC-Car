@@ -44,8 +44,9 @@ def get_img(dir):
     imgdec = cv2.imdecode(img, 1)
     if dir == "home":
         dir = "forward"
-    cv2.imwrite(FOLDER + str(Counter.i).zfill(3) + dir + ".jpg", imgdec)
-    Counter.i += 1
+    if dir not in ["stop", "speed"]:
+        cv2.imwrite(FOLDER + str(Counter.i).zfill(3) + dir + ".jpg", imgdec)
+        Counter.i += 1
 
 '''
 def get_image():
