@@ -5,7 +5,8 @@ from sklearn import svm
 import filters
 import parse
 
-DATASET_NAME = "dataset-D2/"
+FOLDER = "client/"
+DATASET_NAME = "pictures/"
 SIZE = 80*60
 DEBUG = False
 
