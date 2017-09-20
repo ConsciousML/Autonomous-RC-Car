@@ -39,6 +39,9 @@ while True:
 	print '...connected from :', addr     # Print the IP address of the client connected with the server.
 
 	while True:
+                data = ''
+	        data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client.
+
                 ret, frame = cam.read()
 
                 encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
@@ -49,9 +52,7 @@ while True:
                 tcpCliSock.send(str(len(stringData)).ljust(16));
                 tcpCliSock.send(stringData);
 
-		data = ''
-	        data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client.
-		# Analyze the command received and control the car accordingly.
+                # Analyze the command received and control the car accordingly.
 		if not data:
 			break
 		if data == ctrl_cmd[0]:
