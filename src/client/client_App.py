@@ -37,7 +37,9 @@ class Counter:
 def get_img(dir):
     FOLDER = "pictures/"
     length = recvall(tcpCliSock, 16)
+    print 'rec len'
     stringData = recvall(tcpCliSock, int(length))
+    print 'rec img'
     img = numpy.fromstring(stringData, dtype='uint8')
     imgdec = cv2.imdecode(img, 1)
     if dir == "home":
@@ -81,19 +83,19 @@ def home_fun(event):
     process_dir('home')
 
 def x_increase(event):
-	process_dir('x+')
+    process_dir('x+')
 
 def x_decrease(event):
-	process_dir('x-')
+    process_dir('x-')
 
 def y_increase(event):
-	process_dir('y+')
+    process_dir('y+')
 
 def y_decrease(event):
-	process_dir('y-')
+    process_dir('y-')
 
 def xy_home(event):
-	process_dir('xy_home')
+    process_dir('xy_home')
 
 # =============================================================================
 # Exit the GUI program and close the network connection between the client
@@ -188,12 +190,15 @@ top.bind('<KeyRelease-w>', stop_fun)
 spd = 50
 
 def changeSpeed(ev=None):
-	tmp = 'speed'
-	global spd
-	spd = speed.get()
-	data = tmp + str(spd)  # Change the integers into strings and combine them with the string 'speed'.
-	print 'sendData = %s' % data
-	tcpCliSock.send(data)  # Send the speed data to the server(Raspberry Pi)
+    tmp = 'speed'
+    global spd
+    spd = speed.get()
+    data = tmp + str(spd)  # Change the integers into strings and combine them with the string 'speed'.
+    print 'sendData = %s' % data
+    tcpCliSock.send(data)  # Send the speed data to the server(Raspberry Pi)
+    get_img("speed")
+    print 'image received'
+
 
 label = Label(top, text='Speed:', fg='red')  # Create a label
 label.grid(row=6, column=0)                  # Label layout
@@ -207,4 +212,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-
