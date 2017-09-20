@@ -32,6 +32,6 @@ if DEBUG:
 clf = clf.fit(X_train, y_train)
 
 y_pred = clf.predict(X_test)
-scoring.show_confusion_matrix(y_test, y_pred)
+scoring.get_confusion_matrix(y_test, y_pred)
 
 _ = joblib.dump(clf, CLF_FOLDER + CLF_NAME + ".joblib.pkl")

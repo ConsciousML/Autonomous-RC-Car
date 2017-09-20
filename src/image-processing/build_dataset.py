@@ -6,7 +6,7 @@ import filters
 import parse
 
 FOLDER = "client/pictures/"
-DATASET_NAME = "D2-test1/"
+DATASET_NAME = "dataset-D2/"
 SIZE = 80*60
 DEBUG = False
 
