@@ -1,0 +1,31 @@
+***
+Result for classifier: onevsrest
+FF: 0157 FL: 0066 FR: 0016
+LF: 0035 LL: 0069 LR: 0007
+RF: 0014 RL: 0013 RR: 0055
+
+             precision    recall  f1-score   support
+
+    forward       0.76      0.66      0.71       239
+       left       0.47      0.62      0.53       111
+      right       0.71      0.67      0.69        82
+
+avg / total       0.68      0.65      0.66       432
+
+Accuracy: 0.650463
+***
+Result for classifier: forest_defaultparams
+Training samples: 1005	Testing samples: 432
+FF: 0194 FL: 0032 FR: 0013
+LF: 0039 LL: 0071 LR: 0001
+RF: 0030 RL: 0006 RR: 0046
+
+             precision    recall  f1-score   support
+
+    forward       0.74      0.81      0.77       239
+       left       0.65      0.64      0.65       111
+      right       0.77      0.56      0.65        82
+
+avg / total       0.72      0.72      0.72       432
+
+Accuracy: 0.719907
