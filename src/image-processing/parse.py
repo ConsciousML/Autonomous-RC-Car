@@ -15,6 +15,9 @@ def get_filenames(path):
         if DEBUG:
             print("File is: %s" % infile)
         filenames.append(infile)
+    if not filenames:
+        print("Not any file found.")
+        sys.exit(1)
     return filenames
 
 
