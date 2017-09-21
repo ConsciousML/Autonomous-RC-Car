@@ -29,8 +29,7 @@ def process_image(filename):
 
 
 for i, f in enumerate(files):
-    if DEBUG:
-        print("Handling file %s" % f)
+    print("Handling file %s" % f)
     dataset[i] = process_image(f)
     labels[i] = parse.labelize(f)
 

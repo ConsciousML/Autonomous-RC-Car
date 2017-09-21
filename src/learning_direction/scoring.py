@@ -1,7 +1,8 @@
 from sklearn import metrics
 
 def get_confusion_matrix(y_test, y_pred):
-    ff, fl, fr, lf, ll, lr, rf, rl, rr  = metrics.confusion_matrix(y_test, y_pred).ravel()
+    print(metrics.confusion_matrix(y_test, y_pred))
+    ff, fl, fr, lf, ll, lr, rf, rl, rr = metrics.confusion_matrix(y_test, y_pred).ravel()
     n = len(y_test)
     print("FF: %04d FL: %04d FR: %04d" % (ff, fl, fr))
     print("LF: %04d LL: %04d LR: %04d" % (lf, ll, lr))
