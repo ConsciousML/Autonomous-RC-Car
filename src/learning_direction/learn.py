@@ -51,7 +51,7 @@ _ = joblib.dump(clf, CLF_FOLDER + CLF_NAME + "" +".joblib.pkl")
 
 # Searching parameters
 search_parameters = None
-'''
+"""
 search_parameters = {
         'criterion': ['gini', 'entropy'],
         'n_estimators': [45, 46, 47, 48, 49, 50, 52]

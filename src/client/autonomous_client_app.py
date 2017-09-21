@@ -26,7 +26,7 @@ tcpCliSock.connect(ADDR)                    # Connect with the server
 dira = 0
 
 dic_dir = {-1: "left", 0: "forward", 1: "right"}
-dic_dir_l = {1: "left", 0: "forward", 2: "right"}
+dic_dir_l = {1: "left", 0: "home", 2: "right"}
 clf = pickle.loads("../forest_defaultparams.joblib.plk")
 
 def recvall(sock, count):
@@ -121,6 +121,11 @@ def main():
     tcpCliSock.send("OK")
     get_img()
     changeSpeed()
+
+    tcpCliSock.send("OK")
+    get_img()
+    tcpCliSock.send("forward")
+
     while True:
         tcpCliSock.send("OK")
         img = get_image()
