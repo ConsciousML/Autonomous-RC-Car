@@ -73,3 +73,4 @@ if search_parameters:
 else:
     scoring.get_confusion_matrix(y_test, y_pred)
     _ = joblib.dump(clf, CLF_FOLDER + CLF_NAME + ".joblib.pkl")
+"""
