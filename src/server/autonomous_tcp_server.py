@@ -44,6 +44,7 @@ while True:
 
         try:
             data = tcpCliSock.recv(BUFSIZ)    # Receive ask from the client.
+            print data
             print 'asking pic'
             ret, frame = cam.read()
 
@@ -55,7 +56,6 @@ while True:
             tcpCliSock.setblocking(1)
             tcpCliSock.send(str(len(stringData)).ljust(16));
             tcpCliSock.send(stringData);
-            tcpCliSock.setblocking(0)
             print 'image sent'
 
             not_ready = True
@@ -66,7 +66,9 @@ while True:
                     not_ready = False
                 except:
                     continue
-
+            
+            tcpCliSock.send("OK")
+            tcpCliSock.setblocking(0)
 
             # Analyze the command received and control the car accordingly.
             if not data:
