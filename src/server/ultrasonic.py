@@ -4,8 +4,23 @@ from __future__ import print_function
 import time
 import RPi.GPIO as GPIO
 
+from threading import Thread
+
 # -----------------------
-# Define some functions
+# Define sensor parameters
+# -----------------------
+
+# Define GPIO to use on Pi
+GPIO_TRIGGER = 23
+GPIO_ECHO    = 24
+
+# Speed of sound in cm/s at temperature
+temperature = 20
+speedSound = 33100 + (0.6*temperature)
+
+
+# -----------------------
+# Define measurement functions
 # -----------------------
 def measure():
   # This function measures a distance
@@ -39,47 +54,53 @@ def measure_average():
   distance = distance / 3
   return distance
 
-# -----------------------
-# Main Script
-# -----------------------
+def setup():
+  # Use BCM GPIO references
+  # instead of physical pin numbers
+  GPIO.setmode(GPIO.BCM)
 
-# Use BCM GPIO references
-# instead of physical pin numbers
-GPIO.setmode(GPIO.BCM)
+  print("Ultrasonic measurement setup:")
+  print("Speed of sound is",speedSound/100,"m/s at ",temperature,"deg")
 
-# Define GPIO to use on Pi
-GPIO_TRIGGER = 23
-GPIO_ECHO    = 24
+  # Set pins as output and input
+  GPIO.setup(GPIO_TRIGGER,GPIO.OUT)  # Trigger
+  GPIO.setup(GPIO_ECHO,GPIO.IN)      # Echo
 
-# Speed of sound in cm/s at temperature
-temperature = 20
-speedSound = 33100 + (0.6*temperature)
+  # Set trigger to False (Low)
+  GPIO.output(GPIO_TRIGGER, False)
 
-print("Ultrasonic Measurement")
-print("Speed of sound is",speedSound/100,"m/s at ",temperature,"deg")
+  # Allow module to settle
+  time.sleep(0.5)
 
-# Set pins as output and input
-GPIO.setup(GPIO_TRIGGER,GPIO.OUT)  # Trigger
-GPIO.setup(GPIO_ECHO,GPIO.IN)      # Echo
 
-# Set trigger to False (Low)
-GPIO.output(GPIO_TRIGGER, False)
+def run(sleep_time=1):
+  # Wrap main content in a try block so we can
+  # catch the user pressing CTRL-C and run the
+  # GPIO cleanup function. This will also prevent
+  # the user seeing lots of unnecessary error
+  # messages.
+  try:
+    while True:
+      distance = measure_average() # takes ~0.2 seconds
+      print("Distance : {0:5.1f}".format(distance))
+      time.sleep(sleep_time)
 
-# Allow module to settle
-time.sleep(0.5)
+  except KeyboardInterrupt:
+    # User pressed CTRL-C
+    # Reset GPIO settings
+    GPIO.cleanup()
 
-# Wrap main content in a try block so we can
-# catch the user pressing CTRL-C and run the
-# GPIO cleanup function. This will also prevent
-# the user seeing lots of unnecessary error
-# messages.
-try:
-  while True:
-    distance = measure_average()
-    print("Distance : {0:5.1f}".format(distance))
-    time.sleep(1)
+class UltrasonicAsync(Thread):
+  def __init__(self, sleep_time):
+    Thread.__init__(self)
+    self.dist = measure_average()
+    # Add config code here
 
-except KeyboardInterrupt:
-  # User pressed CTRL-C
-  # Reset GPIO settings
-  GPIO.cleanup()
+  def run(self):
+    while True:
+      dist = measure_average()
+      self.dist = dist
+
+  # Safe stop method here
+
+
