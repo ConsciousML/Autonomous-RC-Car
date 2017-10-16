@@ -6,8 +6,11 @@ import cv2
 import os
 import pickle
 import scipy
+import filters
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.externals import joblib
+import PIL
 
 
 os.system('xset r off')
@@ -22,12 +25,13 @@ ADDR = (HOST, PORT)
 
 tcpCliSock = socket(AF_INET, SOCK_STREAM)   # Create a socket
 tcpCliSock.connect(ADDR)                    # Connect with the server
+tcpCliSock.setblocking(1)
 
 dira = 0
 
 dic_dir = {-1: "left", 0: "forward", 1: "right"}
 dic_dir_l = {1: "left", 0: "home", 2: "right"}
-clf = pickle.loads("../forest_defaultparams.joblib.plk")
+clf = joblib.load("../forest_defaultparams.joblib.pkl")
 
 def recvall(sock, count):
     buf = b''
@@ -106,12 +110,11 @@ def y_decrease(event):
 def xy_home(event):
     process_dir('xy_home')
 
-spd = 50
+spd = 35
 
 def changeSpeed():
     tmp = 'speed'
     global spd
-    spd = speed.get()
     data = tmp + str(spd)  # Change the integers into strings and combine them with the string 'speed'.
     print 'sendData = %s' % data
     tcpCliSock.send(data)  # Send the speed data to the server(Raspberry Pi)
@@ -122,20 +125,42 @@ def main():
     get_img()
     changeSpeed()
 
+    rep = tcpCliSock.recv(64)
+
     tcpCliSock.send("OK")
     get_img()
     tcpCliSock.send("forward")
 
+
+    tcpCliSock.recv(64)
+
     while True:
         tcpCliSock.send("OK")
-        img = get_image()
+        img = get_img()
+        img = PIL.Image.fromarray(numpy.uint8(img))
 
-        img = filters.binarize(filename, 160)
+        img = img.convert('L') # 'L' is monochrome, '1' is black and white
+        img = numpy.array(img)
+
+        img = filters.bin_array(img, 160)
         img = scipy.misc.imresize(img, (80, 60), interp="nearest")
-        img = img.reshape(SIZE)
+        img = img.reshape((1,60*80))
 
-        data = dic_dir_l[clf.predict(img)]
+        data = dic_dir_l[clf.predict(img)[0]]
+        print data
         tcpCliSock.send(data)
+
+        tcpCliSock.recv(64)
+
+        """tcpCliSock.send("OK")
+        get_img()
+        tcpCliSock.send("stop")
+        tcpCliSock.recv(64)
+
+        tcpCliSock.send("OK")
+        get_img()
+        tcpCliSock.send("forward")
+        tcpCliSock.recv(64)"""
 
 
 if __name__ == '__main__':

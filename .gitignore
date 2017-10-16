@@ -2,6 +2,7 @@
 *.jpg
 *.swp
 *.swo
+.idea/*
 server/config
 client/config
 html_server/config
