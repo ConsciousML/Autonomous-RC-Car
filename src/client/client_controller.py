@@ -11,6 +11,7 @@ import xbox
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.externals import joblib
+from time import sleep
 import PIL
 
 
@@ -110,7 +111,7 @@ def y_decrease(event):
 def xy_home(event):
     process_dir('xy_home')
 
-spd = 35
+spd = 100
 
 def changeSpeed():
     tmp = 'speed'
@@ -124,37 +125,38 @@ def main():
     #get_img()
     changeSpeed()
 
-    rep = tcpCliSock.recv(64)
+    #rep = tcpCliSock.recv(64)
     #get_img()
 
-    tcpCliSock.recv(64)
+    #tcpCliSock.recv(64)
     joy = xbox.Joystick()
     last_trig = False
-
+    last_x = 0
+    data = ''
     while True:
         t = joy.rightTrigger()
+        x = joy.rightX()
         cur_trig = t > 0
-        if (last_trig == cur_trig):
-            continue
-        last_trig = cur_trig
-        if (cur_trig == 0.0):
-            data = 'stop'
-        if (cur_trig > 0):
-            data = 'forward'
-        print(data)
-        tcpCliSock.send(data)
-        tcpCliSock.recv(64)
+        if (not(last_trig == cur_trig)):
+            last_trig = cur_trig
+            if (cur_trig == 0.0):
+                send_data(tcpCliSock, 'stop')
+            if (cur_trig > 0):
+                send_data(tcpCliSock, 'forward')
+        if (not(x == last_x)):
+            last_x = x
+            if (x == 0):
+                continue
+            if (x > 0):
+                send_data(tcpCliSock, 'right')
+            else:
+                send_data(tcpCliSock, 'left')
 
-        """tcpCliSock.send("OK")
-        get_img()
-        tcpCliSock.send("stop")
-        tcpCliSock.recv(64)
-
-        tcpCliSock.send("OK")
-        get_img()
-        tcpCliSock.send("forward")
-        tcpCliSock.recv(64)"""
-
+def send_data(tcpCliSock, data):
+    print data
+    tcpCliSock.send(data)
+    #tcpCliSock.recv(64)
+    sleep(0.3)
 
 if __name__ == '__main__':
 	main()
