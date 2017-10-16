@@ -2,3 +2,4 @@ pillow
 numpy
 sklearn
 scipy
+keras
