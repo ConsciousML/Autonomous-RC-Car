@@ -23,39 +23,38 @@ speedSound = 33100 + (0.6*temperature)
 # Define measurement functions
 # -----------------------
 def measure():
-  # This function measures a distance
+    # This function measures a distance
   GPIO.output(GPIO_TRIGGER, True)
   # Wait 10us
   time.sleep(0.00001)
   GPIO.output(GPIO_TRIGGER, False)
   start = time.time()
-  
+
   while GPIO.input(GPIO_ECHO)==0:
-    start = time.time()
+      start = time.time()
 
   while GPIO.input(GPIO_ECHO)==1:
-    stop = time.time()
+      stop = time.time()
 
   elapsed = stop-start
   distance = (elapsed * speedSound)/2
 
   return distance
 
-def measure_average():
-  # This function takes 3 measurements and
+def measure_average(sleep_time=0.1):
+    # This function takes 3 measurements and
   # returns the average.
-
+  sleep_time /= 3
   distance1=measure()
-  time.sleep(0.1)
+  time.sleep(sleep_time)
   distance2=measure()
-  time.sleep(0.1)
+  time.sleep(sleep_time)
   distance3=measure()
   distance = distance1 + distance2 + distance3
-  distance = distance / 3
-  return distance
+  return distance /= 3
 
 def setup():
-  # Use BCM GPIO references
+    # Use BCM GPIO references
   # instead of physical pin numbers
   GPIO.setmode(GPIO.BCM)
 
@@ -74,32 +73,34 @@ def setup():
 
 
 def run(sleep_time=1):
-  # Wrap main content in a try block so we can
+    # Wrap main content in a try block so we can
   # catch the user pressing CTRL-C and run the
   # GPIO cleanup function. This will also prevent
   # the user seeing lots of unnecessary error
   # messages.
   try:
-    while True:
-      distance = measure_average() # takes ~0.2 seconds
+      while True:
+          distance = measure_average() # takes ~0.2 seconds
       print("Distance : {0:5.1f}".format(distance))
       time.sleep(sleep_time)
 
   except KeyboardInterrupt:
-    # User pressed CTRL-C
+      # User pressed CTRL-C
     # Reset GPIO settings
     GPIO.cleanup()
 
+
 class UltrasonicAsync(Thread):
-  def __init__(self, sleep_time):
-    Thread.__init__(self)
-    self.dist = measure_average()
+
+    def __init__(self, sleep_time):
+        Thread.__init__(self)
+    self.sleep_time = sleep_time
+    self.dist = measure_average(self.sleep_time)
     # Add config code here
 
   def run(self):
-    while True:
-      dist = measure_average()
-      self.dist = dist
+      while True:
+          self.dist = measure_average(self.sleep_time)
 
   # Safe stop method here
 

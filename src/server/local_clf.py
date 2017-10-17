@@ -14,6 +14,9 @@ from scipy.misc import imsave
 from scipy.misc import imresize
 import numpy as np
 
+import ultrasonic
+
+# To be imported from externals
 def bin_array(numpy_array, threshold=170):
     """Binarize a numpy array."""
     for i in range(len(numpy_array)):
@@ -24,6 +27,14 @@ def bin_array(numpy_array, threshold=170):
                 numpy_array[i][j] = 0
     return numpy_array
 
+# Settings initialization
+busnum = 1          # Edit busnum to 0, if you uses Raspberry Pi 1 or 0
+video_dir.setup(busnum=busnum)
+car_dir.setup(busnum=busnum)
+motor.setup(busnum=busnum)     # Initialize the Raspberry Pi GPIO connected to the DC motor.
+video_dir.home_x_y()
+car_dir.home()
+
 # Load classifier
 CLF_FOLDER = "../"
 CLF_NAME = "forest_defaultparams"
@@ -33,21 +44,18 @@ labels = ['forward', 'left', 'right']
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
 # Component initialization
-busnum = 1          # Edit busnum to 0, if you uses Raspberry Pi 1 or 0
-video_dir.setup(busnum=busnum)
-car_dir.setup(busnum=busnum)
-motor.setup(busnum=busnum)     # Initialize the Raspberry Pi GPIO connected to the DC motor.
-video_dir.home_x_y()
-car_dir.home()
-
 cam = cv2.VideoCapture(0)
+sleep_time = 0.3
+ultrason = ultrasonic.UltrasonicAsync(sleep_time) 
 
 i = 0
 while True:
     data = ''
 
     try:
-        print 'read image %d' % i
+        print '%2d: check if obstacle' % i
+
+        print '%2d: read image' % i
         ret, frame = cam.read()
         if ret:
             img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
