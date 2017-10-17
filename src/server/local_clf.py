@@ -140,3 +140,5 @@ while True:
 
         else:
             print 'Command Error! Cannot recognize command: ' + data
+
+cam.release()
