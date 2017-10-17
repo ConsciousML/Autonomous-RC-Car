@@ -19,7 +19,7 @@ def setup(busnum=None):
 				offset = int(line[9:-1])
 	except:
 		print 'config error'
-	leftPWM += offset
+	leftPWM += offset - 20
 	homePWM += offset
 	rightPWM += offset
 	if busnum == None:
@@ -52,6 +52,11 @@ def turn_right():
 # ==========================================================================================
 
 def turn(angle):
+        global last_dir
+        if (angle > 180):
+            last_dir = 1
+        else:
+            last_dir = -1
 	angle = Map(angle, 0, 255, leftPWM, rightPWM)
 	pwm.write(0, 0, angle)
 
@@ -59,10 +64,12 @@ def home():
 	global homePWM
         global last_dir
         off = 0
-        if last_dir == -1:
-            off = 10
-        elif last_dir == 1:
-            off = -25
+        if last_dir == 1:
+            #right
+            off = -40
+        elif last_dir == -1:
+            #left
+            off = -5
 	pwm.write(0, 0, homePWM + off)
 
 def calibrate(x):
@@ -81,5 +88,6 @@ def test():
 if __name__ == '__main__':
 	setup()
 	home()
+
 
 
