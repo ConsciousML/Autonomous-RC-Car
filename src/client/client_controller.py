@@ -9,6 +9,7 @@ import scipy
 import filters
 import xbox
 import math
+import time
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.externals import joblib
@@ -47,14 +48,17 @@ def recvall(sock, count):
 class Counter:
     i = 1437
 
-def get_img():
+def get_img(angle):
+    global dira
+    FOLDER = "pictures/"
     length = recvall(tcpCliSock, 16)
-    print 'rec len'
     stringData = recvall(tcpCliSock, int(length))
-    print 'rec img'
     img = numpy.fromstring(stringData, dtype='uint8')
     imgdec = cv2.imdecode(img, 1)
-    return imgdec
+    path = FOLDER + str(Counter.i).zfill(3) + "_" + str(angle) + ".jpg"
+    print path
+    cv2.imwrite(path, imgdec)
+    Counter.i += 1
 
 '''
 def get_image():
@@ -123,17 +127,12 @@ def changeSpeed():
 
 
 def main():
-    #get_img()
     changeSpeed()
-
-    #rep = tcpCliSock.recv(64)
-    #get_img()
-
-    #tcpCliSock.recv(64)
     joy = xbox.Joystick()
     last_trig = False
     last_x = 0
     data = ''
+    start_time = time.time()
     while True:
         t = joy.rightTrigger()
         x = joy.rightX()
@@ -146,8 +145,7 @@ def main():
                 send_data(tcpCliSock, 'forward')
         if (not(x == last_x)):
             if (x == 0):
-                #send_data(tcpCliSock, 'home')
-                send_data(tcpCliSock, 'home')
+                start_time = send_data_angle(tcpCliSock, 'home', 'home', start_time)
             last_x = x
             angle = int(x * 180 + 180)
             if (angle == 180):
@@ -159,20 +157,27 @@ def main():
                 angle = 180 - int((180 - angle) * 0.8)
             if (angle > 225):
                 angle = 225
-            #if (x > 0):
-                #send_data(tcpCliSock, 'right')
-            #    send_data(tcpCliSock, 'turn=360')
-            #if (x < 0):
-                #send_data(tcpCliSock, 'left')
-            #    send_data(tcpCliSock, 'turn=0')
             data = 'turn=' + str(angle)
-            send_data(tcpCliSock, data)
+            start_time = send_data_angle(tcpCliSock, data, str(angle), start_time)
 
 def send_data(tcpCliSock, data):
     print data
     tcpCliSock.send(data)
-    #tcpCliSock.recv(64)
     sleep(0.2)
+
+def send_data_angle(tcpCliSock, data, angle, start_time):
+    print data
+    exec_time = time.time() - start_time
+    if (exec_time >= 1):
+        tcpCliSock.send(data)
+        sleep(0.2)
+        tcpCliSock.send("OK")
+        get_img(angle)
+        start_time = time.time()
+    else:
+        tcpCliSock.send(data)
+        sleep(0.2)
+    return start_time
 
 if __name__ == '__main__':
 	main()
