@@ -7,9 +7,11 @@ import os
 import pickle
 import scipy
 import filters
+import xbox
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.externals import joblib
+from time import sleep
 import PIL
 
 
@@ -31,7 +33,6 @@ dira = 0
 
 dic_dir = {-1: "left", 0: "forward", 1: "right"}
 dic_dir_l = {1: "left", 0: "home", 2: "right"}
-clf = joblib.load("../forest_defaultparams.joblib.pkl")
 
 def recvall(sock, count):
     buf = b''
@@ -110,7 +111,7 @@ def y_decrease(event):
 def xy_home(event):
     process_dir('xy_home')
 
-spd = 35
+spd = 100
 
 def changeSpeed():
     tmp = 'speed'
@@ -121,47 +122,41 @@ def changeSpeed():
 
 
 def main():
-    tcpCliSock.send("OK")
-    get_img()
+    #get_img()
     changeSpeed()
 
-    rep = tcpCliSock.recv(64)
+    #rep = tcpCliSock.recv(64)
+    #get_img()
 
-    tcpCliSock.send("OK")
-    get_img()
-    tcpCliSock.send("forward")
-
-
-    tcpCliSock.recv(64)
-
+    #tcpCliSock.recv(64)
+    joy = xbox.Joystick()
+    last_trig = False
+    last_x = 0
+    data = ''
     while True:
-        tcpCliSock.send("OK")
-        img = get_img()
-        img = PIL.Image.fromarray(numpy.uint8(img))
+        t = joy.rightTrigger()
+        x = joy.rightX()
+        cur_trig = t > 0
+        if (not(last_trig == cur_trig)):
+            last_trig = cur_trig
+            if (cur_trig == 0.0):
+                send_data(tcpCliSock, 'stop')
+            if (cur_trig > 0):
+                send_data(tcpCliSock, 'forward')
+        if (not(x == last_x)):
+            last_x = x
+            if (x == 0):
+                continue
+            if (x > 0):
+                send_data(tcpCliSock, 'right')
+            else:
+                send_data(tcpCliSock, 'left')
 
-        img = img.convert('L') # 'L' is monochrome, '1' is black and white
-        img = numpy.array(img)
-
-        img = filters.bin_array(img, 160)
-        img = scipy.misc.imresize(img, (80, 60), interp="nearest")
-        img = img.reshape((1,60*80))
-
-        data = dic_dir_l[clf.predict(img)[0]]
-        print data
-        tcpCliSock.send(data)
-
-        tcpCliSock.recv(64)
-
-        """tcpCliSock.send("OK")
-        get_img()
-        tcpCliSock.send("stop")
-        tcpCliSock.recv(64)
-
-        tcpCliSock.send("OK")
-        get_img()
-        tcpCliSock.send("forward")
-        tcpCliSock.recv(64)"""
-
+def send_data(tcpCliSock, data):
+    print data
+    tcpCliSock.send(data)
+    #tcpCliSock.recv(64)
+    sleep(0.3)
 
 if __name__ == '__main__':
 	main()

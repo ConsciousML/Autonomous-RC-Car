@@ -12,13 +12,10 @@ def bin_array(numpy_array, threshold):
                 numpy_array[i][j] = 0
     return numpy_array
 
-def bin_image(img, threshold=170):
+def binarize(filename, threshold=170):
+    """Binarize an image """
+    file = Image.open(filename)
     file = file.convert('L') # 'L' is monochrome, '1' is black and white
     file = np.array(file)
     file = bin_array(file, threshold)
     return file
-
-def binarize(filename, threshold=170):
-    """Binarize an image """
-    file = Image.open(filename)
-    return bin_image(file, threshold)

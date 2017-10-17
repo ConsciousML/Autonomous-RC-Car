@@ -78,7 +78,7 @@ while True:
                     not_ready = False
                 except:
                     continue
-            
+
             tcpCliSock.send("OK")
             tcpCliSock.setblocking(0)
 
@@ -163,4 +163,5 @@ while True:
         except:
             cam.read()
 
+cam.release()
 tcpSerSock.close()
