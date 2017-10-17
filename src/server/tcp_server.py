@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#/usr/bin/env python
 import RPi.GPIO as GPIO
 import video_dir
 import car_dir
@@ -16,6 +16,7 @@ HOST = ''           # The variable of HOST is null, so the function bind( ) can 
 PORT = 21567
 BUFSIZ = 1024       # Size of the buffer
 ADDR = (HOST, PORT)
+FOLDER = "pictures/"
 
 tcpSerSock = socket(AF_INET, SOCK_STREAM)    # Create a socket.
 tcpSerSock.bind(ADDR)    # Bind the IP address and port number of the server.
@@ -29,6 +30,9 @@ video_dir.home_x_y()
 car_dir.home()
 
 cam = cv2.VideoCapture(0)
+
+class Counter:
+    i = 1437
 
 while True:
     print 'Waiting for connection...'
@@ -46,17 +50,25 @@ while True:
         try:
             data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client
             print 'command receved'
-            if (data == 'OK'):
+            if (len(data) > 2 and data[0] == 'O' and data[1] == 'K'):
+                angle = data[2:]
                 ret, frame = cam.read()
                 encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
                 result, imgencode = cv2.imencode('.jpg', frame, encode_param)
                 data_f = numpy.array(imgencode)
+                imgdec = cv2.imdecode(data_f, 1)
+                path = FOLDER + str(Counter.i).zfill(3) + "_" + str(angle) + ".jpg"
+                print path
+                cv2.imwrite(path, imgdec)
+                Counter.i += 1
+                """
                 stringData = data_f.tostring()
                 tcpCliSock.setblocking(1)
                 tcpCliSock.send(str(len(stringData)).ljust(16));
                 tcpCliSock.send(stringData);
                 tcpCliSock.setblocking(0)
-                print 'image sent'
+                """
+                print 'image saved'
                 continue
 
             # Analyze the command received and control the car accordingly.

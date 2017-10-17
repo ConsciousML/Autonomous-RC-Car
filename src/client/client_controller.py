@@ -171,8 +171,8 @@ def send_data_angle(tcpCliSock, data, angle, start_time):
     if (exec_time >= 1):
         tcpCliSock.send(data)
         sleep(0.2)
-        tcpCliSock.send("OK")
-        get_img(angle)
+        tcpCliSock.send("OK" + str(angle))
+        #get_img(angle)
         start_time = time.time()
     else:
         tcpCliSock.send(data)
