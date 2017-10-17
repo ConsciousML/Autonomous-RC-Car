@@ -5,6 +5,7 @@ import car_dir
 import motor
 import cv2
 import numpy
+import threading
 from socket import *
 from time import ctime          # Import necessary modules
 
@@ -31,8 +32,26 @@ car_dir.home()
 
 cam = cv2.VideoCapture(0)
 
-class Counter:
-    i = 1437
+class ImgThread(threading.Thread):
+    def __init__(self, angle, folder, cv2, cam):
+        threading.Thread.__init__(self)
+        self.angle = angle
+        self.folder = folder
+        self.i = 1437
+        self.cv2 = cv2
+        self.cam = cam
+    def run(self):
+        ret, frame = self.cam.read()
+        encode_param=[int(self.cv2.IMWRITE_JPEG_QUALITY),90]
+        result, imgencode = self.cv2.imencode('.jpg', frame, encode_param)
+        data_f = numpy.array(imgencode)
+        imgdec = self.cv2.imdecode(data_f, 1)
+        path = self.folder + str(self.i).zfill(3) + "_" + str(self.angle) + ".jpg"
+        print path
+        self.cv2.imwrite(path, imgdec)
+        self.i += 1
+        
+
 
 while True:
     print 'Waiting for connection...'
@@ -45,30 +64,15 @@ while True:
 
     while True:
         data = ''
-        #last_data = ''
-
         try:
             data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client
             print 'command receved'
             if (len(data) > 2 and data[0] == 'O' and data[1] == 'K'):
                 angle = data[2:]
-                ret, frame = cam.read()
-                encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
-                result, imgencode = cv2.imencode('.jpg', frame, encode_param)
-                data_f = numpy.array(imgencode)
-                imgdec = cv2.imdecode(data_f, 1)
-                path = FOLDER + str(Counter.i).zfill(3) + "_" + str(angle) + ".jpg"
-                print path
-                cv2.imwrite(path, imgdec)
-                Counter.i += 1
-                """
-                stringData = data_f.tostring()
-                tcpCliSock.setblocking(1)
-                tcpCliSock.send(str(len(stringData)).ljust(16));
-                tcpCliSock.send(stringData);
-                tcpCliSock.setblocking(0)
-                """
+                ImgThread(angle, FOLDER, cv2, cam).run()
+
                 print 'image saved'
+                print data
                 continue
 
             # Analyze the command received and control the car accordingly.
