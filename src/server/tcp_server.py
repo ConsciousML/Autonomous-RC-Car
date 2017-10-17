@@ -41,10 +41,16 @@ while True:
 
     while True:
         data = ''
+        #last_data = ''
 
         try:
             data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client.
+            #if (last_data == data):
+            #    continue
+            #last_data = data
             print 'command receved'
+            
+            """
             ret, frame = cam.read()
 
             encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
@@ -56,7 +62,7 @@ while True:
             tcpCliSock.send(str(len(stringData)).ljust(16));
             tcpCliSock.send(stringData);
             tcpCliSock.setblocking(0)
-            print 'image sent'
+            print 'image sent'"""
 
             # Analyze the command received and control the car accordingly.
             if not data:
