@@ -13,7 +13,6 @@ import time
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.externals import joblib
-from time import sleep
 import PIL
 
 
@@ -21,8 +20,8 @@ os.system('xset r off')
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
 
-HOST = '192.168.43.46'    # Laure (Ionis's Down) IP address
-#HOST = '172.20.10.11'     # Thibaut (iPhone) IP address
+#HOST = '192.168.43.46'    # Laure (Ionis's Down) IP address
+HOST = '172.20.10.11'     # Thibaut (iPhone) IP address
 PORT = 21567
 BUFSIZ = 1024             # buffer size
 ADDR = (HOST, PORT)
@@ -133,6 +132,7 @@ def main():
     last_x = 0
     data = ''
     start_time = time.time()
+    angle = 180
     while True:
         t = joy.rightTrigger()
         x = joy.rightX()
@@ -142,10 +142,10 @@ def main():
             if (cur_trig == 0.0):
                 send_data(tcpCliSock, 'stop')
             if (cur_trig > 0):
-                send_data(tcpCliSock, 'forward')
+                send_data_angle(tcpCliSock, 'forward', str(angle), start_time)
         if (not(x == last_x)):
             if (x == 0):
-                start_time = send_data_angle(tcpCliSock, 'home', 'home', start_time)
+                start_time = send_data_angle(tcpCliSock, 'home', '180', start_time)
             last_x = x
             angle = int(x * 180 + 180)
             if (angle == 180):
@@ -163,20 +163,20 @@ def main():
 def send_data(tcpCliSock, data):
     print data
     tcpCliSock.send(data)
-    sleep(0.2)
+    tcpCliSock.recv(64)
 
 def send_data_angle(tcpCliSock, data, angle, start_time):
     print data
     exec_time = time.time() - start_time
     if (exec_time >= 1):
         tcpCliSock.send(data)
-        sleep(0.2)
+        tcpCliSock.recv(64)
         tcpCliSock.send("OK" + str(angle))
-        #get_img(angle)
+        tcpCliSock.recv(64)
         start_time = time.time()
     else:
         tcpCliSock.send(data)
-        sleep(0.2)
+        tcpCliSock.recv(64)
     return start_time
 
 if __name__ == '__main__':
