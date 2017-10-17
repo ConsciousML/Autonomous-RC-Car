@@ -8,6 +8,7 @@ import pickle
 import scipy
 import filters
 import xbox
+import math
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.externals import joblib
@@ -144,19 +145,34 @@ def main():
             if (cur_trig > 0):
                 send_data(tcpCliSock, 'forward')
         if (not(x == last_x)):
-            last_x = x
             if (x == 0):
+                #send_data(tcpCliSock, 'home')
+                send_data(tcpCliSock, 'home')
+            last_x = x
+            angle = int(x * 180 + 180)
+            if (angle == 180):
                 continue
-            if (x > 0):
-                send_data(tcpCliSock, 'right')
-            else:
-                send_data(tcpCliSock, 'left')
+            if (angle > 180):
+                tmp = angle - 180
+                angle = 180 + int(tmp * 0.8)
+            if (angle < 180):
+                angle = 180 - int((180 - angle) * 0.8)
+            if (angle > 225):
+                angle = 225
+            #if (x > 0):
+                #send_data(tcpCliSock, 'right')
+            #    send_data(tcpCliSock, 'turn=360')
+            #if (x < 0):
+                #send_data(tcpCliSock, 'left')
+            #    send_data(tcpCliSock, 'turn=0')
+            data = 'turn=' + str(angle)
+            send_data(tcpCliSock, data)
 
 def send_data(tcpCliSock, data):
     print data
     tcpCliSock.send(data)
     #tcpCliSock.recv(64)
-    sleep(0.3)
+    sleep(0.2)
 
 if __name__ == '__main__':
 	main()
