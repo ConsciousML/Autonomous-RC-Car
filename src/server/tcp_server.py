@@ -66,11 +66,11 @@ while True:
         data = ''
         try:
             data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client
+            tcpCliSock.send('OK')
             print 'command receved'
             if (len(data) > 2 and data[0] == 'O' and data[1] == 'K'):
                 angle = data[2:]
                 ImgThread(angle, FOLDER, cv2, cam).run()
-
                 print 'image saved'
                 print data
                 continue
