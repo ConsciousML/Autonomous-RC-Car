@@ -90,18 +90,27 @@ def run(sleep_time=1):
     GPIO.cleanup()
 
 
+### Usage:
+# - Create UltrasonicAsync instance
+# - Call run() method
+# - Read dist field when needed
+# - When done, call stop() then join() methods to properly close the thread
+
 class UltrasonicAsync(Thread):
 
   def __init__(self, sleep_time):
     Thread.__init__(self)
     self.sleep_time = sleep_time
+    setup()
     self.dist = measure_average(self.sleep_time)
+    self.stop_flag = False
     # Add config code here
 
+  def stop(self):
+    self.stop_flag = True
+
   def run(self):
-    while True:
+    self.stop_flag = False
+    while not stop_flag:
       self.dist = measure_average(self.sleep_time)
-
-  # Safe stop method here
-
-
+    GPIO.cleanup()

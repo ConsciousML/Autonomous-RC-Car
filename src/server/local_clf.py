@@ -46,6 +46,7 @@ ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'ho
 # Component initialization
 cam = cv2.VideoCapture(0)
 sleep_time = 0.3
+
 ultrason = ultrasonic.UltrasonicAsync(sleep_time) 
 
 i = 0
@@ -150,3 +151,7 @@ while True:
             print 'Command Error! Cannot recognize command: ' + data
 
 cam.release()
+
+# Proper thread kill
+ultrason.stop()
+ultrason.join()
