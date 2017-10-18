@@ -36,7 +36,7 @@ video_dir.home_x_y()
 car_dir.home()
 
 # Load classifier
-CLF_FOLDER = "../"
+CLF_FOLDER = ""
 CLF_NAME = "forest_defaultparams"
 clf = joblib.load(CLF_FOLDER + CLF_NAME + ".joblib.pkl")
 
@@ -47,14 +47,18 @@ ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'ho
 cam = cv2.VideoCapture(0)
 sleep_time = 0.3
 
+'''
 ultrason = ultrasonic.UltrasonicAsync(sleep_time)
 ultrason.run()
 obstacleExist = False
+'''
 
 i = 0
 while True:
     data = ''
 
+    # Check of obstacles
+    '''
     print '%2d: check if obstacle' % i
     if ultrason.dist < 100:
         print '*** Found new obstacle at distance %f' % ultrason.dist
@@ -67,6 +71,7 @@ while True:
         else:
             print '*** Can move! Obstacle is now at distance %f' % ultrason.dist
             obstacleExist = False
+    '''
 
     try:
         print '%2d: read image' % i
@@ -165,5 +170,7 @@ while True:
 cam.release()
 
 # Proper thread kill
+'''
 ultrason.stop()
 ultrason.join()
+'''
