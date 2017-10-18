@@ -13,7 +13,7 @@ def bin_array(numpy_array, threshold):
     return numpy_array
 
 def bin_image(img, threshold=170):
-    file = file.convert('L') # 'L' is monochrome, '1' is black and white
+    file = img.convert('L') # 'L' is monochrome, '1' is black and white
     file = np.array(file)
     file = bin_array(file, threshold)
     return file
