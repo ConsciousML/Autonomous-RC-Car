@@ -106,6 +106,9 @@ class UltrasonicAsync(Thread):
     self.stop_flag = False
     # Add config code here
 
+  def obstacle_near():
+    return dist < 100
+
   def stop(self):
     self.stop_flag = True
 
