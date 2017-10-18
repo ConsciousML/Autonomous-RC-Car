@@ -58,8 +58,8 @@ def setup():
   # instead of physical pin numbers
   GPIO.setmode(GPIO.BCM)
 
-  print("Ultrasonic measurement setup:")
-  print("Speed of sound is",speedSound/100,"m/s at ",temperature,"deg")
+  #print("Ultrasonic measurement setup:")
+  #print("Speed of sound is",speedSound/100,"m/s at ",temperature,"deg")
 
   # Set pins as output and input
   GPIO.setup(GPIO_TRIGGER,GPIO.OUT)  # Trigger
@@ -100,10 +100,12 @@ class UltrasonicAsync(Thread):
 
   def __init__(self, sleep_time):
     Thread.__init__(self)
+    print("Setup ultrasonic sensor...")
     self.sleep_time = sleep_time
     setup()
     self.dist = measure_average(self.sleep_time)
     self.stop_flag = False
+    print("Setup done!")
     # Add config code here
 
   def obstacle_near():
