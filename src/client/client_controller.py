@@ -143,22 +143,23 @@ def main():
                 send_data(tcpCliSock, 'stop')
             if (cur_trig > 0):
                 send_data_angle(tcpCliSock, 'forward', str(angle), start_time)
-        if (not(x == last_x)):
+        elif (not(x == last_x)):
+            last_x = x
             if (x == 0):
                 start_time = send_data_angle(tcpCliSock, 'home', '180', start_time)
-            last_x = x
-            angle = int(x * 180 + 180)
-            if (angle == 180):
-                continue
-            if (angle > 180):
-                tmp = angle - 180
-                angle = 180 + int(tmp * 0.8)
-            if (angle < 180):
-                angle = 180 - int((180 - angle) * 0.8)
-            if (angle > 225):
-                angle = 225
-            data = 'turn=' + str(angle)
-            start_time = send_data_angle(tcpCliSock, data, str(angle), start_time)
+            else:
+                angle = int(x * 180 + 180)
+                if (angle == 180):
+                    continue
+                if (angle > 180):
+                    tmp = angle - 180
+                    angle = 180 + int(tmp * 0.8)
+                if (angle < 180):
+                    angle = 180 - int((180 - angle) * 0.8)
+                if (angle > 225):
+                    angle = 225
+                data = 'turn=' + str(angle)
+                start_time = send_data_angle(tcpCliSock, data, str(angle), start_time)
 
 def send_data(tcpCliSock, data):
     print data
@@ -168,7 +169,7 @@ def send_data(tcpCliSock, data):
 def send_data_angle(tcpCliSock, data, angle, start_time):
     print data
     exec_time = time.time() - start_time
-    if (exec_time >= 1):
+    if (exec_time >= 0.5):
         tcpCliSock.send(data)
         tcpCliSock.recv(64)
         tcpCliSock.send("OK" + str(angle))
