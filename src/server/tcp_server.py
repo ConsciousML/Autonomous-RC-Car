@@ -31,25 +31,26 @@ video_dir.home_x_y()
 car_dir.home()
 
 cam = cv2.VideoCapture(0)
+i = 0
 
 class ImgThread(threading.Thread):
     def __init__(self, angle, folder, cv2, cam):
         threading.Thread.__init__(self)
         self.angle = angle
         self.folder = folder
-        self.i = 1437
         self.cv2 = cv2
         self.cam = cam
     def run(self):
+        global i
+        i += 1
         ret, frame = self.cam.read()
         encode_param=[int(self.cv2.IMWRITE_JPEG_QUALITY),90]
         result, imgencode = self.cv2.imencode('.jpg', frame, encode_param)
         data_f = numpy.array(imgencode)
         imgdec = self.cv2.imdecode(data_f, 1)
-        path = self.folder + str(self.i).zfill(3) + "_" + str(self.angle) + ".jpg"
+        path = self.folder + str(i) + "_" + str(self.angle) + ".jpg"
         print path
         self.cv2.imwrite(path, imgdec)
-        self.i += 1
         
 
 
