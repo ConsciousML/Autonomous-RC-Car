@@ -15,7 +15,7 @@ busnum = 1          # Edit busnum to 0, if you uses Raspberry Pi 1 or 0
 
 HOST = ''           # The variable of HOST is null, so the function bind( ) can be bound to all valid addresses.
 PORT = 21567
-BUFSIZ = 1024       # Size of the buffer
+BUFSIZ = 8       # Size of the buffer
 ADDR = (HOST, PORT)
 FOLDER = "pictures/"
 
@@ -65,16 +65,17 @@ while True:
     while True:
         data = ''
         try:
-            data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client
-            tcpCliSock.send('OK')
+            data = tcpCliSock.recv(BUFSIZ).strip()    # Receive data sent from the client
             print 'command receved'
             if (len(data) > 2 and data[0] == 'O' and data[1] == 'K'):
                 angle = data[2:]
                 ImgThread(angle, FOLDER, cv2, cam).run()
                 print 'image saved'
                 print data
+                tcpCliSock.send('OK')
                 continue
 
+            tcpCliSock.send('OK')
             # Analyze the command received and control the car accordingly.
             if not data:
 	        break
