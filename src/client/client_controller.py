@@ -133,6 +133,7 @@ def main():
     data = ''
     start_time = time.time()
     angle = 180
+    last_is_home = False
     while True:
         t = joy.rightTrigger()
         x = joy.rightX()
@@ -140,14 +141,17 @@ def main():
         if (not(last_trig == cur_trig)):
             last_trig = cur_trig
             if (cur_trig == 0.0):
-                send_data(tcpCliSock, 'stop')
+                send_data(tcpCliSock, 'stop    ')
             if (cur_trig > 0):
-                send_data_angle(tcpCliSock, 'forward', str(angle), start_time)
+                send_data_angle(tcpCliSock, 'forward ', str(angle), start_time)
         elif (not(x == last_x)):
             last_x = x
-            if (x == 0):
-                start_time = send_data_angle(tcpCliSock, 'home', '180', start_time)
+            if (x > -0.03 and x < 0.03):
+                if not(last_is_home):
+                    start_time = send_data_angle(tcpCliSock, 'home    ', '180', start_time)
+                last_is_home = True
             else:
+                last_is_home = False
                 angle = int(x * 180 + 180)
                 if (angle == 180):
                     continue
@@ -158,7 +162,13 @@ def main():
                     angle = 180 - int((180 - angle) * 0.8)
                 if (angle > 225):
                     angle = 225
-                data = 'turn=' + str(angle)
+                str_angle = str(angle)
+                if (len(str_angle) == 1):
+                    data = 'turn=' + str(angle) + '  '
+                if (len(str_angle) == 2):
+                    data = 'turn=' + str(angle) + ' '
+                if (len(str_angle) == 3):
+                    data = 'turn=' + str(angle)
                 start_time = send_data_angle(tcpCliSock, data, str(angle), start_time)
 
 def send_data(tcpCliSock, data):
