@@ -6,7 +6,14 @@ u, c = np.unique(labels, return_counts=True)
 p = zip(u, c)
 print p
 
-maxe = 548
+
+def min(a, b) : return a if a < b else b
+
+maxe = -1
+for k, v in p:
+    if maxe == -1:
+        maxe = v
+    maxe = min(maxe, v)
 
 r = np.ones((3, maxe), dtype=np.int)
 
