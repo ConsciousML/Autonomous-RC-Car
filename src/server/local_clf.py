@@ -6,13 +6,13 @@ import motor
 import cv2
 import numpy
 from socket import *
-from time import ctime          # Import necessary modules
 from sklearn.externals import joblib
 import numpy as np
 from PIL import Image
 from scipy.misc import imsave
 from scipy.misc import imresize
 import numpy as np
+import time
 
 import ultrasonic
 
@@ -47,15 +47,28 @@ ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'ho
 cam = cv2.VideoCapture(0)
 sleep_time = 0.3
 
-ultrason = ultrasonic.UltrasonicAsync(sleep_time) 
+ultrason = ultrasonic.UltrasonicAsync(sleep_time)
+ultrason.run()
+obstacleExist = False
 
 i = 0
 while True:
     data = ''
 
-    try:
-        print '%2d: check if obstacle' % i
+    print '%2d: check if obstacle' % i
+    if ultrason.dist < 100:
+        print '*** Found new obstacle at distance %f' % ultrason.dist
+        obstacleExist = True
 
+    while obstacleExist:
+        time.sleep(sleep_time)
+        if ultra.dist < 100:
+            print 'Can not move. Obstacle is at distance %f' % ultrason.dist
+        else:
+            print '*** Can move! Obstacle is now at distance %f' % ultrason.dist
+            obstacleExist = False
+
+    try:
         print '%2d: read image' % i
         ret, frame = cam.read()
         if ret:
@@ -95,7 +108,6 @@ while True:
         elif data == ctrl_cmd[5]:
             print 'read cpu temp...'
             temp = cpu_temp.read()
-            tcpCliSock.send('[%s] %0.2f' % (ctime(), temp))
         elif data == ctrl_cmd[8]:
             print 'recv x+ cmd'
             video_dir.move_increase_x()
