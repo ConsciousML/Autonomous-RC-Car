@@ -185,7 +185,14 @@ def send_data_angle(tcpCliSock, data, angle, start_time):
     if (exec_time >= 0.33):
         tcpCliSock.send(data)
         tcpCliSock.recv(64)
-        tcpCliSock.send("OK" + str(angle))
+        str_angle = str(angle)
+        if (len(str_angle) == 1):
+            data = 'OK' + str(angle) + '     '
+        if (len(str_angle) == 2):
+            data = 'OK' + str(angle) + '    '
+        if (len(str_angle) == 3):
+            data = 'OK' + str(angle) + '   '
+        tcpCliSock.send(data)
         tcpCliSock.recv(64)
         start_time = time.time()
     else:
