@@ -83,8 +83,11 @@ while True:
             img = img.reshape(1, -1) # because it is a single feature
             data = clf.predict(img)
             data = labels[int(data[0])]
+            print 'DATA = %s' % data
+
         else:
             print "*** Problems taking a picture."
+        i += 1
     except:
         continue
 
