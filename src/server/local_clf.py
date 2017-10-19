@@ -32,6 +32,8 @@ busnum = 1          # Edit busnum to 0, if you uses Raspberry Pi 1 or 0
 video_dir.setup(busnum=busnum)
 car_dir.setup(busnum=busnum)
 motor.setup(busnum=busnum)     # Initialize the Raspberry Pi GPIO connected to the DC motor.
+motor.setSpeed(50)
+motor.forward()
 video_dir.home_x_y()
 car_dir.home()
 
@@ -52,7 +54,6 @@ sleep_time = 0.3
 PRINT_TIME = False
 ULTRASONIC = False
 
-motor.setSpeed(50)
 
 
 # Obstacle Detection
