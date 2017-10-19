@@ -32,7 +32,7 @@ print("***")
 print("Result for classifier: %s" % CLF_NAME)
 if DEBUG:
     print("Dataset loaded.")
-X_train, X_test, y_train, y_test = train_test_split(dataset, labels, test_size=0.3, random_state=None)
+X_train, X_test, y_train, y_test = train_test_split(dataset, labels, test_size=0.001, random_state=None)
 
 print("Training samples: %d\tTesting samples: %d" % (len(X_train), len(X_test)))
 # Different classifiers

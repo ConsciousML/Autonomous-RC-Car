@@ -37,7 +37,7 @@ car_dir.home()
 
 # Load classifier
 CLF_FOLDER = "../"
-CLF_NAME = "forest_defaultparams"
+CLF_NAME = "forest_recurent_same_nb"
 clf = joblib.load(CLF_FOLDER + CLF_NAME + ".joblib.pkl")
 
 labels = ['forward', 'left', 'right']
@@ -111,7 +111,7 @@ while True:
         i += 1
     except:
         print '*** Exception'
-        pass
+        raise
 
     # Analyze the command received and control the car accordingly.
     if not data:

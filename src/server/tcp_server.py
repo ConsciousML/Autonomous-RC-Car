@@ -31,7 +31,7 @@ video_dir.home_x_y()
 car_dir.home()
 
 cam = cv2.VideoCapture(0)
-i = 996
+i = 0
 
 class ImgThread(threading.Thread):
     def __init__(self, angle, folder, cv2, cam):
