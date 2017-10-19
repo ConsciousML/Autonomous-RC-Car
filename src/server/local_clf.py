@@ -41,6 +41,7 @@ CLF_NAME = "forest_recurent_same_nb"
 clf = joblib.load(CLF_FOLDER + CLF_NAME + ".joblib.pkl")
 
 labels = ['forward', 'left', 'right']
+rev_labels = {'forward':0, 'left':1, 'right':2 }
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
 # Component initialization
@@ -102,10 +103,10 @@ while True:
             sample = np.ones((1, 80 * 60 + 1))
             if last_img is None:
                 sample = np.append(img,  img)
-                sample = np.append(sample, 'forward') # because what else?
+                sample = np.append(sample, rev_labels['forward']) # because what else?
             else:
                 sample = np.append(img, last_img)
-                sample = np.append(sample, last_data)
+                sample = np.append(sample, rev_labels[last_data])
 
             # Predict
             if PRINT_TIME:
@@ -113,7 +114,8 @@ while True:
                 print 'image process took %0.3f s' % (t_process - t_init)
                 t_init = time.time()
 
-            data = clf.predict(img)
+            sample = sample.reshape(1, -1) # because it is a single feature
+            data = clf.predict(sample)
             if PRINT_TIME:
                 t_pred = time.time()
                 print 'prediction took %0.3f s' % (t_pred - t_init)
