@@ -36,7 +36,7 @@ video_dir.home_x_y()
 car_dir.home()
 
 # Load classifier
-CLF_FOLDER = ""
+CLF_FOLDER = "../"
 CLF_NAME = "forest_defaultparams"
 clf = joblib.load(CLF_FOLDER + CLF_NAME + ".joblib.pkl")
 
@@ -47,6 +47,8 @@ ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'ho
 cam = cv2.VideoCapture(0)
 sleep_time = 0.3
 
+# Flags
+PRINT_TIME = False
 '''
 ultrason = ultrasonic.UltrasonicAsync(sleep_time)
 ultrason.run()
@@ -75,13 +77,30 @@ while True:
 
     try:
         print '%2d: read image' % i
+
+        if PRINT_TIME:
+            t_init = time.time()
         ret, frame = cam.read()
+        if PRINT_TIME:
+            t_imread = time.time()
+            print 'imread took %0.3f s' % (t_imread - t_init)
+            t_init = time.time()
+
         if ret:
-            img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            img = imresize(frame, (80, 60))
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             img = bin_array(img)
-            img = imresize(img, (80, 60), interp='nearest')
             img = img.reshape(1, -1) # because it is a single feature
+            if PRINT_TIME:
+                t_process = time.time()
+                print 'image process took %0.3f s' % (t_process - t_init)
+                t_init = time.time()
+
             data = clf.predict(img)
+            if PRINT_TIME:
+                t_pred = time.time()
+                print 'prediction took %0.3f s' % (t_pred - t_init)
+
             data = labels[int(data[0])]
             print 'DATA = %s' % data
 
@@ -89,7 +108,8 @@ while True:
             print "*** Problems taking a picture."
         i += 1
     except:
-        continue
+        print '*** Exception'
+        pass
 
     # Analyze the command received and control the car accordingly.
         if not data:
