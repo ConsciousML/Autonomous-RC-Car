@@ -52,6 +52,8 @@ sleep_time = 0.3
 PRINT_TIME = False
 ULTRASONIC = False
 
+motor.setSpeed(50)
+
 
 # Obstacle Detection
 if ULTRASONIC:
@@ -132,6 +134,11 @@ while True:
         i += 1
     except:
         print '*** Exception'
+        if ULTRASONIC:
+            ultrason.stop()
+            ultrason.join()
+        cam.release()
+        motor.stop()
         raise
 
     # Analyze the command received and control the car accordingly.
