@@ -170,7 +170,7 @@ def main():
 
 def send_data(tcpCliSock, data):
     data = ajust_buffer(data)
-    print data
+    #print data
     tcpCliSock.send(data)
     tcpCliSock.recv(64)
 
@@ -185,12 +185,12 @@ def send_data_angle(tcpCliSock, data, angle, label, start_time):
     if (exec_time >= 0.1):
         data = ajust_buffer(data)
         tcpCliSock.send(data)
-        print 'sent_data',data
+        #print 'sent_data',data
         tcpCliSock.recv(64)
         label = normalize_label(label)
         label = "%.4f" % label
         str_label = str(label)
-        print 'sent_label',label
+        #print 'sent_label',label
         data = 'OK' + label
         data = ajust_buffer(data)
         tcpCliSock.send(data)
