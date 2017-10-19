@@ -17,12 +17,16 @@ from sklearn.ensemble import GradientBoostingClassifier
 '''
 from sklearn.ensemble import RandomForestClassifier
 
+DATASET_NAME = "recurent_same_nb"
 CLF_FOLDER = "./"
-CLF_NAME = "forest_defaultparams"
+CLF_NAME = "forest_" + DATASET_NAME
 DEBUG = False
 
-dataset = np.load("dataset_same_nb.npy")
-labels = np.load("labels_same_nb.npy")
+#DATASET_NAME = "same_nb"
+#DATASET_NAME = ""
+
+dataset = np.load("dataset_" + DATASET_NAME + ".npy")
+labels = np.load("labels_" + DATASET_NAME + ".npy")
 print(dataset[1].sum)
 print("***")
 print("Result for classifier: %s" % CLF_NAME)
