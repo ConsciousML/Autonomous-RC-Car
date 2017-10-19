@@ -1,7 +1,12 @@
 *.pyc
 *.jpg
-*.swp
+*.swk
+*.swl
+*.swm
+*.swn
 *.swo
+*.swp
+*.npy
 .idea/*
 server/config
 client/config
