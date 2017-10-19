@@ -8,12 +8,12 @@ import filters
 import parse
 
 FOLDER = "client/"
-DATASET_NAME = "dataset01/"
+DATASET_NAME = "pictures/"
 SIZE = 80*60
 DEBUG = False
 
 files = parse.get_filenames(FOLDER + DATASET_NAME)
-dataset = np.ones((len(files), SIZE * 2))
+dataset = np.ones((len(files), SIZE * 2 + 1))
 labels = np.ones(len(files))
 
 class Counter:
@@ -43,11 +43,11 @@ for i, f in enumerate(files):
 
     img_0 = process_image(f)
     if img_1 is None:
-        dataset[i] = np.append(img_0, img_0)
-        # add label_1
+        imgs = np.append(img_0, img_0)
+        dataset[i] = np.append(imgs, parse.labelize(f))
     else:
-        dataset[i] = np.append(img_0, img_1)
-        # add label_1
+        imgs = np.append(img_0, img_1)
+        dataset[i] = np.append(imgs, label_1)
     img_1 = img_0
     label_1 = parse.labelize(f)
     labels[i] = label_1
