@@ -1,10 +1,11 @@
-#!/usr/bin/env python
+#/usr/bin/env python
 import RPi.GPIO as GPIO
 import video_dir
 import car_dir
 import motor
 import cv2
 import numpy
+import threading
 from socket import *
 from time import ctime          # Import necessary modules
 
@@ -14,8 +15,9 @@ busnum = 1          # Edit busnum to 0, if you uses Raspberry Pi 1 or 0
 
 HOST = ''           # The variable of HOST is null, so the function bind( ) can be bound to all valid addresses.
 PORT = 21567
-BUFSIZ = 1024       # Size of the buffer
+BUFSIZ = 12       # Size of the buffer
 ADDR = (HOST, PORT)
+FOLDER = "pictures/"
 
 tcpSerSock = socket(AF_INET, SOCK_STREAM)    # Create a socket.
 tcpSerSock.bind(ADDR)    # Bind the IP address and port number of the server.
@@ -29,6 +31,28 @@ video_dir.home_x_y()
 car_dir.home()
 
 cam = cv2.VideoCapture(0)
+i = 270
+
+class ImgThread(threading.Thread):
+    def __init__(self, angle, folder, cv2, cam):
+        threading.Thread.__init__(self)
+        self.angle = angle
+        self.folder = folder
+        self.cv2 = cv2
+        self.cam = cam
+    def run(self):
+        global i
+        i += 1
+        ret, frame = self.cam.read()
+        encode_param=[int(self.cv2.IMWRITE_JPEG_QUALITY),90]
+        result, imgencode = self.cv2.imencode('.jpg', frame, encode_param)
+        data_f = numpy.array(imgencode)
+        imgdec = self.cv2.imdecode(data_f, 1)
+        path = self.folder + str(i) + "_" + str(self.angle) + ".jpg"
+        print path
+        self.cv2.imwrite(path, imgdec)
+        
+
 
 while True:
     print 'Waiting for connection...'
@@ -41,23 +65,18 @@ while True:
 
     while True:
         data = ''
-
         try:
-            data = tcpCliSock.recv(BUFSIZ)    # Receive data sent from the client.
-            print 'command receved'
-            ret, frame = cam.read()
+            data = tcpCliSock.recv(BUFSIZ).strip()    # Receive data sent from the client
+            #print 'command receved'
+            if (len(data) > 2 and data[0] == 'O' and data[1] == 'K'):
+                angle = data[2:]
+                ImgThread(angle, FOLDER, cv2, cam).run()
+                #print 'image saved'
+                #print data
+                tcpCliSock.send('OK')
+                continue
 
-            encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
-            result, imgencode = cv2.imencode('.jpg', frame, encode_param)
-            data_f = numpy.array(imgencode)
-            stringData = data_f.tostring()
-
-            tcpCliSock.setblocking(1)
-            tcpCliSock.send(str(len(stringData)).ljust(16));
-            tcpCliSock.send(stringData);
-            tcpCliSock.setblocking(0)
-            print 'image sent'
-
+            tcpCliSock.send('OK')
             # Analyze the command received and control the car accordingly.
             if not data:
 	        break

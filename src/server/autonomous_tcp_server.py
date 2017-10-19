@@ -7,6 +7,12 @@ import cv2
 import numpy
 from socket import *
 from time import ctime          # Import necessary modules
+import sys
+import scipy
+
+# our
+sys.path.insert(0, '../image-processing/filters.py')
+from build_dataset import bin_image
 
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
@@ -50,7 +56,13 @@ while True:
 
             encode_param=[int(cv2.IMWRITE_JPEG_QUALITY),90]
             result, imgencode = cv2.imencode('.jpg', frame, encode_param)
+
+            # Process image
             data_f = numpy.array(imgencode)
+            data_f = bin_image(data_f)
+            data_f = scipy.misc.imresize(data_f, (80, 60), interp="nearest")
+            data_f = data_f.reshape(80 * 60)
+
             stringData = data_f.tostring()
 
             tcpCliSock.setblocking(1)
@@ -66,7 +78,7 @@ while True:
                     not_ready = False
                 except:
                     continue
-            
+
             tcpCliSock.send("OK")
             tcpCliSock.setblocking(0)
 
@@ -151,4 +163,5 @@ while True:
         except:
             cam.read()
 
+cam.release()
 tcpSerSock.close()
