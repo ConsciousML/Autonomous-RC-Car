@@ -15,7 +15,7 @@ busnum = 1          # Edit busnum to 0, if you uses Raspberry Pi 1 or 0
 
 HOST = ''           # The variable of HOST is null, so the function bind( ) can be bound to all valid addresses.
 PORT = 21567
-BUFSIZ = 8       # Size of the buffer
+BUFSIZ = 12       # Size of the buffer
 ADDR = (HOST, PORT)
 FOLDER = "pictures/"
 
@@ -31,7 +31,7 @@ video_dir.home_x_y()
 car_dir.home()
 
 cam = cv2.VideoCapture(0)
-i = 0
+i = 996
 
 class ImgThread(threading.Thread):
     def __init__(self, angle, folder, cv2, cam):
