@@ -31,7 +31,7 @@ video_dir.home_x_y()
 car_dir.home()
 
 cam = cv2.VideoCapture(0)
-i = 0
+i = 270
 
 class ImgThread(threading.Thread):
     def __init__(self, angle, folder, cv2, cam):
@@ -67,12 +67,12 @@ while True:
         data = ''
         try:
             data = tcpCliSock.recv(BUFSIZ).strip()    # Receive data sent from the client
-            print 'command receved'
+            #print 'command receved'
             if (len(data) > 2 and data[0] == 'O' and data[1] == 'K'):
                 angle = data[2:]
                 ImgThread(angle, FOLDER, cv2, cam).run()
-                print 'image saved'
-                print data
+                #print 'image saved'
+                #print data
                 tcpCliSock.send('OK')
                 continue
 
