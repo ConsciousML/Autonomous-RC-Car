@@ -20,7 +20,7 @@ os.system('xset r off')
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
 
-#HOST = '192.168.43.46'    # Laure (Ionis's Down) IP address
+HOST = '192.168.43.46'    # Laure (Ionis's Down) IP address
 HOST = '172.20.10.11'     # Thibaut (iPhone) IP address
 PORT = 21567
 BUFSIZ = 1024             # buffer size
@@ -122,8 +122,14 @@ def changeSpeed():
     global spd
     data = tmp + str(spd)  # Change the integers into strings and combine them with the string 'speed'.
     print 'sendData = %s' % data
+    data = ajust_buffer(data)
     tcpCliSock.send(data)  # Send the speed data to the server(Raspberry Pi)
 
+def normalize_label(x):
+    if (x < 0):
+        return 0.5 - x * (-0.5)
+    else:
+        return x * 0.5 + 0.5
 
 def main():
     changeSpeed()
@@ -143,12 +149,12 @@ def main():
             if (cur_trig == 0.0):
                 send_data(tcpCliSock, 'stop    ')
             if (cur_trig > 0):
-                send_data_angle(tcpCliSock, 'forward ', str(angle), start_time)
+                send_data_angle(tcpCliSock, 'forward ', str(angle), x, start_time)
         elif (not(x == last_x)):
             last_x = x
             if (x > -0.03 and x < 0.03):
                 if not(last_is_home):
-                    start_time = send_data_angle(tcpCliSock, 'home    ', '180', start_time)
+                    start_time = send_data_angle(tcpCliSock, 'home', '180', x, start_time)
                 last_is_home = True
             else:
                 last_is_home = False
@@ -158,44 +164,40 @@ def main():
                     angle = int(180 + x * 144)
                 if (angle == 180):
                     continue
-                """
-                if (angle > 180):
-                    tmp = angle - 180
-                    angle = 180 + int(tmp * 0.8)
-                if (angle < 180):
-                    angle = 180 - int((180 - angle) * 0.8)
-                """
                 str_angle = str(angle)
-                if (len(str_angle) == 1):
-                    data = 'turn=' + str(angle) + '  '
-                if (len(str_angle) == 2):
-                    data = 'turn=' + str(angle) + ' '
-                if (len(str_angle) == 3):
-                    data = 'turn=' + str(angle)
-                start_time = send_data_angle(tcpCliSock, data, str(angle), start_time)
+                data = 'turn=' + str_angle
+                start_time = send_data_angle(tcpCliSock, data, str_angle, x, start_time)
 
 def send_data(tcpCliSock, data):
+    data = ajust_buffer(data)
     print data
     tcpCliSock.send(data)
     tcpCliSock.recv(64)
 
-def send_data_angle(tcpCliSock, data, angle, start_time):
-    print data
+def ajust_buffer(string):
+    while len(string) < 12:
+        print string
+        string += ' '
+    return string
+
+def send_data_angle(tcpCliSock, data, angle, label, start_time):
     exec_time = time.time() - start_time
-    if (exec_time >= 0.33):
+    if (exec_time >= 0.1):
+        data = ajust_buffer(data)
         tcpCliSock.send(data)
+        print 'sent_data',data
         tcpCliSock.recv(64)
-        str_angle = str(angle)
-        if (len(str_angle) == 1):
-            data = 'OK' + str(angle) + '     '
-        if (len(str_angle) == 2):
-            data = 'OK' + str(angle) + '    '
-        if (len(str_angle) == 3):
-            data = 'OK' + str(angle) + '   '
+        label = normalize_label(label)
+        label = "%.4f" % label
+        str_label = str(label)
+        print 'sent_label',label
+        data = 'OK' + label
+        data = ajust_buffer(data)
         tcpCliSock.send(data)
         tcpCliSock.recv(64)
         start_time = time.time()
     else:
+        data = ajust_buffer(data)
         tcpCliSock.send(data)
         tcpCliSock.recv(64)
     return start_time
