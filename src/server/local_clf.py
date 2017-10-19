@@ -49,31 +49,33 @@ sleep_time = 0.3
 
 # Flags
 PRINT_TIME = False
-'''
-ultrason = ultrasonic.UltrasonicAsync(sleep_time)
-ultrason.run()
-obstacleExist = False
-'''
+ULTRASONIC = False
+
+
+# Obstacle Detection
+if ULTRASONIC:
+    ultrason = ultrasonic.UltrasonicAsync(sleep_time)
+    ultrason.run()
+    obstacleExist = False
 
 i = 0
 while True:
     data = ''
 
     # Check of obstacles
-    '''
-    print '%2d: check if obstacle' % i
-    if ultrason.dist < 100:
-        print '*** Found new obstacle at distance %f' % ultrason.dist
-        obstacleExist = True
-
-    while obstacleExist:
-        time.sleep(sleep_time)
-        if ultra.dist < 100:
-            print 'Can not move. Obstacle is at distance %f' % ultrason.dist
-        else:
-            print '*** Can move! Obstacle is now at distance %f' % ultrason.dist
-            obstacleExist = False
-    '''
+    if ULTRASONIC:
+        print '%2d: check if obstacle' % i
+        if ultrason.dist < 100:
+            print '*** Found new obstacle at distance %f' % ultrason.dist
+            obstacleExist = True
+    
+        while obstacleExist:
+            time.sleep(sleep_time)
+            if ultra.dist < 100:
+                print 'Can not move. Obstacle is at distance %f' % ultrason.dist
+            else:
+                print '*** Can move! Obstacle is now at distance %f' % ultrason.dist
+                obstacleExist = False
 
     try:
         print '%2d: read image' % i
@@ -102,7 +104,7 @@ while True:
                 print 'prediction took %0.3f s' % (t_pred - t_init)
 
             data = labels[int(data[0])]
-            print 'DATA = %s' % data
+            print '%2d: prediction: %s' % (i, data)
 
         else:
             print "*** Problems taking a picture."
@@ -193,7 +195,6 @@ while True:
 cam.release()
 
 # Proper thread kill
-'''
-ultrason.stop()
-ultrason.join()
-'''
+if ULTRASONIC:
+    ultrason.stop()
+    ultrason.join()
