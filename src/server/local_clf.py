@@ -17,7 +17,7 @@ import time
 import ultrasonic
 
 # To be imported from externals
-def bin_array(numpy_array, threshold=170):
+def bin_array(numpy_array, threshold=160):
     """Binarize a numpy array."""
     for i in range(len(numpy_array)):
         for j in range(len(numpy_array[0])):
@@ -68,7 +68,7 @@ while True:
         if ultrason.dist < 100:
             print '*** Found new obstacle at distance %f' % ultrason.dist
             obstacleExist = True
-    
+
         while obstacleExist:
             time.sleep(sleep_time)
             if ultra.dist < 100:
