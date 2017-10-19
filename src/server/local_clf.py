@@ -17,7 +17,7 @@ import time
 import ultrasonic
 
 # To be imported from externals
-def bin_array(numpy_array, threshold=170):
+def bin_array(numpy_array, threshold=160):
     """Binarize a numpy array."""
     for i in range(len(numpy_array)):
         for j in range(len(numpy_array[0])):
@@ -32,15 +32,18 @@ busnum = 1          # Edit busnum to 0, if you uses Raspberry Pi 1 or 0
 video_dir.setup(busnum=busnum)
 car_dir.setup(busnum=busnum)
 motor.setup(busnum=busnum)     # Initialize the Raspberry Pi GPIO connected to the DC motor.
+motor.setSpeed(50)
+motor.forward()
 video_dir.home_x_y()
 car_dir.home()
 
 # Load classifier
 CLF_FOLDER = "../"
-CLF_NAME = "forest_defaultparams"
+CLF_NAME = "forest_recurent_same_nb"
 clf = joblib.load(CLF_FOLDER + CLF_NAME + ".joblib.pkl")
 
 labels = ['forward', 'left', 'right']
+rev_labels = {'forward':0, 'left':1, 'right':2 }
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
 # Component initialization
@@ -52,6 +55,7 @@ PRINT_TIME = False
 ULTRASONIC = False
 
 
+
 # Obstacle Detection
 if ULTRASONIC:
     ultrason = ultrasonic.UltrasonicAsync(sleep_time)
@@ -61,6 +65,8 @@ if ULTRASONIC:
 i = 0
 while True:
     data = ''
+    last_data = None
+    last_img = None
 
     # Check of obstacles
     if ULTRASONIC:
@@ -68,7 +74,7 @@ while True:
         if ultrason.dist < 100:
             print '*** Found new obstacle at distance %f' % ultrason.dist
             obstacleExist = True
-    
+
         while obstacleExist:
             time.sleep(sleep_time)
             if ultra.dist < 100:
@@ -80,6 +86,7 @@ while True:
     try:
         print '%2d: read image' % i
 
+        # Take input from camera
         if PRINT_TIME:
             t_init = time.time()
         ret, frame = cam.read()
@@ -89,16 +96,29 @@ while True:
             t_init = time.time()
 
         if ret:
+            # Preprocess the image
             img = imresize(frame, (80, 60))
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             img = bin_array(img)
             img = img.reshape(1, -1) # because it is a single feature
+
+            # Build recurrent programming
+            sample = np.ones((1, 80 * 60 + 1))
+            if last_img is None:
+                sample = np.append(img,  img)
+                sample = np.append(sample, rev_labels['forward']) # because what else?
+            else:
+                sample = np.append(img, last_img)
+                sample = np.append(sample, rev_labels[last_data])
+
+            # Predict
             if PRINT_TIME:
                 t_process = time.time()
                 print 'image process took %0.3f s' % (t_process - t_init)
                 t_init = time.time()
 
-            data = clf.predict(img)
+            sample = sample.reshape(1, -1) # because it is a single feature
+            data = clf.predict(sample)
             if PRINT_TIME:
                 t_pred = time.time()
                 print 'prediction took %0.3f s' % (t_pred - t_init)
@@ -106,12 +126,21 @@ while True:
             data = labels[int(data[0])]
             print '%2d: prediction: %s' % (i, data)
 
+            # Update recurrent
+            last_img = img
+            last_data = data
+
         else:
             print "*** Problems taking a picture."
         i += 1
     except:
         print '*** Exception'
-        pass
+        if ULTRASONIC:
+            ultrason.stop()
+            ultrason.join()
+        cam.release()
+        motor.stop()
+        raise
 
     # Analyze the command received and control the car accordingly.
     if not data:

@@ -2,7 +2,7 @@ from PIL import Image
 from scipy.misc import imsave
 import numpy as np
 
-def bin_array(numpy_array, threshold):
+def bin_array(numpy_array, threshold=160):
     """Binarize a numpy array."""
     for i in range(len(numpy_array)):
         for j in range(len(numpy_array[0])):
