@@ -61,6 +61,8 @@ if ULTRASONIC:
 i = 0
 while True:
     data = ''
+    last_data = None
+    last_img = None
 
     # Check of obstacles
     if ULTRASONIC:
@@ -80,6 +82,7 @@ while True:
     try:
         print '%2d: read image' % i
 
+        # Take input from camera
         if PRINT_TIME:
             t_init = time.time()
         ret, frame = cam.read()
@@ -89,10 +92,22 @@ while True:
             t_init = time.time()
 
         if ret:
+            # Preprocess the image
             img = imresize(frame, (80, 60))
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             img = bin_array(img)
             img = img.reshape(1, -1) # because it is a single feature
+
+            # Build recurrent programming
+            sample = np.ones((1, 80 * 60 + 1))
+            if last_img is None:
+                sample = np.append(img,  img)
+                sample = np.append(sample, 'forward') # because what else?
+            else:
+                sample = np.append(img, last_img)
+                sample = np.append(sample, last_data)
+
+            # Predict
             if PRINT_TIME:
                 t_process = time.time()
                 print 'image process took %0.3f s' % (t_process - t_init)
@@ -105,6 +120,10 @@ while True:
 
             data = labels[int(data[0])]
             print '%2d: prediction: %s' % (i, data)
+
+            # Update recurrent
+            last_img = img
+            last_data = data
 
         else:
             print "*** Problems taking a picture."
