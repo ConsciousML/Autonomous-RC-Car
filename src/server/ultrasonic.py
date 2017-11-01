@@ -73,6 +73,7 @@ def setup():
 
 
 def run(sleep_time=1):
+  setup()
   # Wrap main content in a try block so we can
   # catch the user pressing CTRL-C and run the
   # GPIO cleanup function. This will also prevent
@@ -88,6 +89,8 @@ def run(sleep_time=1):
     # User pressed CTRL-C
     # Reset GPIO settings
     GPIO.cleanup()
+
+run()
 
 
 ### Usage:
