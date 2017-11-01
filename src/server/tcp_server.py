@@ -51,7 +51,7 @@ class ImgThread(threading.Thread):
         path = self.folder + str(i) + "_" + str(self.angle) + ".jpg"
         print path
         self.cv2.imwrite(path, imgdec)
-        
+
 
 
 while True:
@@ -79,10 +79,10 @@ while True:
             tcpCliSock.send('OK')
             # Analyze the command received and control the car accordingly.
             if not data:
-	        break
+                break
             if data == ctrl_cmd[0]:
-	        print 'motor moving forward'
-		motor.forward()
+                print 'motor moving forward'
+                motor.forward()
             elif data == ctrl_cmd[1]:
                 print 'recv backward cmd'
                 motor.backward()
@@ -119,7 +119,7 @@ while True:
                 video_dir.home_x_y()
             elif data[0:5] == 'speed':     # Change the speed
                 print data
-		numLen = len(data) - len('speed')
+                numLen = len(data) - len('speed')
                 if numLen == 1 or numLen == 2 or numLen == 3:
                     tmp = data[-numLen:]
                     print 'tmp(str) = %s' % tmp
@@ -128,7 +128,7 @@ while True:
                     if spd < 24:
                         spd = 24
                     motor.setSpeed(spd)
-	    elif data[0:5] == 'turn=':	#Turning Angle
+            elif data[0:5] == 'turn=':	#Turning Angle
                 print 'data =', data
                 angle = data.split('=')[1]
                 try:
@@ -136,7 +136,7 @@ while True:
                     car_dir.turn(angle)
                 except:
                     print 'Error: angle =', angle
-	    elif data[0:8] == 'forward=':
+            elif data[0:8] == 'forward=':
                 print 'data =', data
                 spd = data[8:]
                 try:
