@@ -34,18 +34,18 @@ def setup(busnum=None):
 # ==========================================================================================
 def turn_left():
     global leftPWM
-        global last_dir
-        last_dir = -1
-  pwm.write(0, 0, leftPWM)  # CH0
+    global last_dir
+    last_dir = -1
+    pwm.write(0, 0, leftPWM)  # CH0
 
 # ==========================================================================================
 # Make the car turn right.
 # ==========================================================================================
 def turn_right():
     global rightPWM
-        global last_dir
-        last_dir = 1
-  pwm.write(0, 0, rightPWM)
+    global last_dir
+    last_dir = 1
+    pwm.write(0, 0, rightPWM)
 
 # ==========================================================================================
 # Make the car turn back.
@@ -53,24 +53,24 @@ def turn_right():
 
 def turn(angle):
     global last_dir
-        if (angle > 180):
-            last_dir = 1
-        else:
-            last_dir = -1
-  angle = Map(angle, 0, 255, leftPWM, rightPWM)
-  pwm.write(0, 0, angle)
+    if (angle > 180):
+        last_dir = 1
+    else:
+        last_dir = -1
+    angle = Map(angle, 0, 255, leftPWM, rightPWM)
+    pwm.write(0, 0, angle)
 
 def home():
     global homePWM
-        global last_dir
-        off = 0
-        if last_dir == 1:
-            #right
-            off = -40
-        elif last_dir == -1:
-            #left
-            off = -5
-  pwm.write(0, 0, homePWM + off)
+    global last_dir
+    off = 0
+    if last_dir == 1:
+        #right
+        off = -40
+    elif last_dir == -1:
+        #left
+        off = -5
+    pwm.write(0, 0, homePWM + off)
 
 def calibrate(x):
     pwm.write(0, 0, 450+x)
@@ -88,6 +88,4 @@ def test():
 if __name__ == '__main__':
     setup()
   home()
-
-
 
