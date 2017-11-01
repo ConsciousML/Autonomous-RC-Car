@@ -16,6 +16,16 @@ import time
 
 import ultrasonic
 
+# Flags
+PRINT_TIME = True
+ULTRASONIC = True
+
+# Obstacle Detection
+if ULTRASONIC:
+    ultrason = ultrasonic.UltrasonicAsync(sleep_time)
+    ultrason.run()
+    obstacleExist = False
+
 # To be imported from externals
 def bin_array(numpy_array, threshold=160):
     """Binarize a numpy array."""
@@ -49,18 +59,6 @@ ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'ho
 # Component initialization
 cam = cv2.VideoCapture(0)
 sleep_time = 0.3
-
-# Flags
-PRINT_TIME = False
-ULTRASONIC = False
-
-
-
-# Obstacle Detection
-if ULTRASONIC:
-    ultrason = ultrasonic.UltrasonicAsync(sleep_time)
-    ultrason.run()
-    obstacleExist = False
 
 i = 0
 while True:
