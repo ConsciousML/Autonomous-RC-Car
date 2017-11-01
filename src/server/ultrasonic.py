@@ -11,8 +11,8 @@ from threading import Thread
 # -----------------------
 
 # Define GPIO to use on Pi
-GPIO_TRIGGER = 23
-GPIO_ECHO    = 24
+GPIO_TRIGGER = 16
+GPIO_ECHO    = 18
 
 # Speed of sound in cm/s at temperature
 temperature = 20
@@ -23,7 +23,7 @@ speedSound = 33100 + (0.6*temperature)
 # Define measurement functions
 # -----------------------
 def measure():
-    # This function measures a distance
+  # This function measures a distance
   GPIO.output(GPIO_TRIGGER, True)
   # Wait 10us
   time.sleep(0.00001)
@@ -42,7 +42,7 @@ def measure():
   return distance
 
 def measure_average(sleep_time=0.1):
-    # This function takes 3 measurements and
+  # This function takes 3 measurements and
   # returns the average.
   sleep_time /= 3
   distance1=measure()
@@ -54,9 +54,10 @@ def measure_average(sleep_time=0.1):
   return distance / 3
 
 def setup():
-    # Use BCM GPIO references
+  # Use BCM GPIO references
   # instead of physical pin numbers
-  GPIO.setmode(GPIO.BCM)
+  # GPIO.setmode(GPIO.BCM)
+  GPIO.setmode(GPIO.BOARD)        # Number GPIOs by its physical location
 
   #print("Ultrasonic measurement setup:")
   #print("Speed of sound is",speedSound/100,"m/s at ",temperature,"deg")
@@ -73,25 +74,22 @@ def setup():
 
 
 def run(sleep_time=1):
-    setup()
+  setup()
   # Wrap main content in a try block so we can
   # catch the user pressing CTRL-C and run the
   # GPIO cleanup function. This will also prevent
   # the user seeing lots of unnecessary error
   # messages.
   try:
-      while True:
-          distance = measure_average() # takes ~0.2 seconds
+    while True:
+      distance = measure_average() # takes ~0.2 seconds
     print("Distance : {0:5.1f}".format(distance))
     time.sleep(sleep_time)
 
   except KeyboardInterrupt:
-      # User pressed CTRL-C
+    # User pressed CTRL-C
     # Reset GPIO settings
     GPIO.cleanup()
-
-run()
-
 
 ### Usage:
 # - Create UltrasonicAsync instance
@@ -101,8 +99,8 @@ run()
 
 class UltrasonicAsync(Thread):
 
-    def __init__(self, sleep_time):
-        Thread.__init__(self)
+  def __init__(self, sleep_time):
+    Thread.__init__(self)
     print("Setup ultrasonic sensor...")
     self.sleep_time = sleep_time
     setup()
@@ -118,7 +116,7 @@ class UltrasonicAsync(Thread):
       self.stop_flag = True
 
   def run(self):
-      self.stop_flag = False
-    while not stop_flag:
-        self.dist = measure_average(self.sleep_time)
+    self.stop_flag = False
+    while not self.stop_flag:
+      self.dist = measure_average(self.sleep_time)
     GPIO.cleanup()

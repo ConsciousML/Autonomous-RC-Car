@@ -21,10 +21,12 @@ PRINT_TIME = True
 ULTRASONIC = True
 
 # Obstacle Detection
+sleep_time = 0.3
 if ULTRASONIC:
     ultrason = ultrasonic.UltrasonicAsync(sleep_time)
-    ultrason.run()
+    ultrason.start()
     obstacleExist = False
+
 
 # To be imported from externals
 def bin_array(numpy_array, threshold=160):
@@ -58,7 +60,7 @@ ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'ho
 
 # Component initialization
 cam = cv2.VideoCapture(0)
-sleep_time = 0.3
+print("ok")
 
 i = 0
 while True:
@@ -71,15 +73,17 @@ while True:
         print '%2d: check if obstacle' % i
         if ultrason.dist < 100:
             print '*** Found new obstacle at distance %f' % ultrason.dist
+            motor.stop()
             obstacleExist = True
 
         while obstacleExist:
             time.sleep(sleep_time)
-            if ultra.dist < 100:
+            if ultrason.dist < 100:
                 print 'Can not move. Obstacle is at distance %f' % ultrason.dist
             else:
                 print '*** Can move! Obstacle is now at distance %f' % ultrason.dist
                 obstacleExist = False
+                motor.forward()
 
     try:
         print '%2d: read image' % i
