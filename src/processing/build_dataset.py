@@ -5,33 +5,21 @@ from sklearn import svm
 import filters
 import parse
 
-FOLDER = "client/"
-DATASET_NAME = "pictures/"
-SIZE = 80*60
-DEBUG = False
+FOLDER = "client/dataset01/"
+DEBUG = True
 
-files = parse.get_filenames(FOLDER + DATASET_NAME)
-dataset = np.ones((len(files), SIZE))
-labels = np.ones(len(files))
+files = []
+dataset = []
+labels = []
 
-class Counter:
-    i = 0
-
-# Pipeline
-def process_image(filename):
-    img = filters.binarize(filename, 160)
-    img = scipy.misc.imresize(img, (80, 60), interp="nearest")
-    if DEBUG:
-        scipy.misc.imsave(FOLDER + "tmp/" + str(Counter.i).zfill(3) + ".jpg", img)
-        Counter.i += 1
-    img = img.reshape(SIZE)
-    return img
-
+files += parse.get_filenames(FOLDER + "forward")
+files += parse.get_filenames(FOLDER + "left")
+files += parse.get_filenames(FOLDER + "right")
 
 for i, f in enumerate(files):
     print("Handling file %s" % f)
-    dataset[i] = process_image(f)
-    labels[i] = parse.labelize(f)
+    dataset.append(f)
+    labels.append(parse.labelize_dir(f))
 
 np.save("dataset", dataset)
 np.save("labels", labels)

@@ -44,12 +44,12 @@ for i, f in enumerate(files):
     img_0 = process_image(f)
     if img_1 is None:
         imgs = np.append(img_0, img_0)
-        dataset[i] = np.append(imgs, parse.labelize(f))
+        dataset[i] = np.append(imgs, parse.labelize_dir(f))
     else:
         imgs = np.append(img_0, img_1)
         dataset[i] = np.append(imgs, label_1)
     img_1 = img_0
-    label_1 = parse.labelize(f)
+    label_1 = parse.labelize_dir(f)
     labels[i] = label_1
 
 np.save("dataset_recurent", dataset)
