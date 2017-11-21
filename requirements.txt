@@ -1,5 +1,5 @@
 pillow
 numpy
-sklearn
+scikit-learn
 scipy
 keras
