@@ -8,8 +8,8 @@ def RecurrentMobileNet():
     # Remove last layers
     last_layer = model.layers[-6]
     out = last_layer.output
-    #out = Recurrent()(out)
-    out = Dense(1)(out)
+    out = Recurrent()(out)
+    out = Dense(1, activation="sigmoid")(out)
 
     my_model = Model(model.layers[0].input, out)
 
@@ -22,6 +22,6 @@ def RecurrentMobileNet():
 
     my_model.compile(loss='mse',
             optimizer='adam',
-            metrics=['acc'])
+            metrics=['mse'])
     return my_model
 

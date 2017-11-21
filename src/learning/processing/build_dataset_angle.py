@@ -3,8 +3,8 @@ from scipy.misc import imread, imresize
 from sklearn import svm
 from random import shuffle
 
-from processing import filters
-from processing import parse
+from src.learning.processing import filters
+from src.learning.processing import parse
 
 NPY_DATA_NAME = "a_dataset"
 NPY_LABELS_NAME = "a_labels"
@@ -12,7 +12,7 @@ NPY_LABELS_NAME = "a_labels"
 def min(a, b) : return a if a < b else b
 
 def dump_npy():
-    FOLDER = "datasets/pictures/"
+    FOLDER = "datasets\\pictures\\"
     DEBUG = True
 
     files = []
@@ -20,11 +20,12 @@ def dump_npy():
     labels = []
 
     files_l1 = parse.get_filenames(FOLDER + "left_dataset")
+    files += files_l1
+    '''
     min_len = len(files_l1)
-
     files_l2 = parse.get_filenames(FOLDER + "right_dataset")
     min_len = min(min_len, len(files_l2))
-
+    
     print(min_len)
 
     shuffle(files_l1)
@@ -34,6 +35,8 @@ def dump_npy():
     files += files_l2[:min_len]
 
     print(len(files))
+    '''
+
 
     for i, f in enumerate(files):
         dataset.append(f)
@@ -47,7 +50,7 @@ def readNshape(img):
     file = imresize(file, (224, 224))
     return file
 
-def gen_data(f_dataset, f_labels, batch_size):
+def gen_data(f_dataset, f_labels, batch_size, test_rate=0.3):
     '''
     f_dataset : nom du fichier .npy où sont les noms des fichiers
     f_labels : nom du fichier .npy où se trouvent les labels
@@ -60,18 +63,28 @@ def gen_data(f_dataset, f_labels, batch_size):
     grappe_data = []
     grappe_labels = []
 
+
+    # Validation
+    idx = int(len(dataset) * test_rate)
+    print("Yielding %d data as validation" % idx)
+    yield dataset[:idx], labels[:idx]
+
+    dataset = dataset[idx:]
+    labels = labels[idx:]
+
     max_size = len(dataset)
-    for i in range(max_size):
+    print("Will yield a total of %d data (validation not included)" % max_size)
 
-        if j == batch_size or i == max_size:
-            yield np.array(grappe_data), np.array(grappe_labels)
+    while True:
+        for i in range(max_size):
 
-            grappe_data = []
-            grappe_labels = []
-            j = 0
+            if j == batch_size:# or i == max_size:
+                yield np.array(grappe_data), np.array(grappe_labels)
 
-        grappe_data.append(readNshape(dataset[i]))
-        grappe_labels.append(labels[i])
-        j += 1
+                grappe_data = []
+                grappe_labels = []
+                j = 0
 
-dump_npy()
+            grappe_data.append(readNshape(dataset[i]))
+            grappe_labels.append(labels[i])
+            j += 1
