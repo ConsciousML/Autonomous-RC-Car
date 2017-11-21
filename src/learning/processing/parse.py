@@ -32,8 +32,7 @@ class REMatcher(object):
     def group(self,i):
         return self.rematch.group(i)
 
-"""
-def labelize(filename):
+def labelize_dir(filename):
     m = REMatcher(filename)
     if m.match(r"(.*/)*(\w+).jpg$"):
         dir = m.group(2)
@@ -44,8 +43,8 @@ def labelize(filename):
     else:
         print("*** Can't match filename with direction.")
         sys.exit(1)
-"""
-def labelize(filename):
+
+def labelize_angle(filename):
     splited_dir = filename.split("/")
     filename = splited_dir[len(splited_dir) - 1]
     splited_name = filename.split("_")
