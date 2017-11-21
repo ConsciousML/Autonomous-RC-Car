@@ -8,11 +8,13 @@ def RecurrentMobileNet():
     # Remove last layers
     last_layer = model.layers[-6]
     out = last_layer.output
-    layer = Dense(1)(out)
+    #out = Recurrent()(out)
+    out = Dense(1)(out)
 
-    my_model = Model(model.layers[0].input, layer)
+    my_model = Model(model.layers[0].input, out)
 
     idx = my_model.layers.index(last_layer)
+
     for i in range(idx):
         my_model.layers[i].trainable = False
     for i in range(idx, len(my_model.layers)):
