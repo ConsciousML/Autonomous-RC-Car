@@ -1,4 +1,4 @@
-import numpy as np
+﻿import numpy as np
 from scipy.misc import imread, imresize
 from sklearn import svm
 from random import shuffle
@@ -67,7 +67,11 @@ def gen_data(f_dataset, f_labels, batch_size, test_rate=0.3):
     # Validation
     idx = int(len(dataset) * test_rate)
     print("Yielding %d data as validation" % idx)
-    yield dataset[:idx], labels[:idx]
+    valid_data = []
+    for i in range(idx):
+        valid_data.append(readNshape(dataset[i]))
+        
+    yield np.array(valid_data[:idx]), np.array(labels[:idx])
 
     dataset = dataset[idx:]
     labels = labels[idx:]
