@@ -14,10 +14,6 @@ def detect_from_file(f, fname, show=False, timer=False, shape=(320, 240)):
   img = cv2.resize(img, shape)
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-  print(fname)
-  print(img)
-  print(gray)
-
   diff = 0
 
   if timer:
