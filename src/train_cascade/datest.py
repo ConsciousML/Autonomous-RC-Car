@@ -69,16 +69,23 @@ def positive_negative(f=detect_stop, dir='stop'):
   print('- False negatives: {}\n'.format(fn / n_pos))
   print('Average time taken: {}'.format(time_tot / n_tot))
 
-positive_negative(f=detect_stop, dir='stop')
 
-count = 0
-time_tot = 0
-for i in range(1300, 1300):
-  files = glob.glob('right_dataset/{}_*.jpg'.format(i))
-  if len(files) != 0:
-    time, _ = detect_from_file(detect_stop, files[0], timer=True)
-    time_tot += time
-    count += 1
+def bench_time(f, data_dir):
+  count = 0
+  time_tot = 0
+  for i in range(1000, 1500):
+    files = glob.glob('{}/{}_*.jpg'.format(data_dir, i))
+    if len(files) != 0:
+      time, _ = detect_from_file(f, files[0], timer=True)
+      time_tot += time
+      count += 1
 
-if count != 0:
-  print("Average time taken: {:.6f}".format(time_tot / count))
+  print('Number of image tested: {}'.format(count))
+  if count != 0:
+    print("Average time taken: {:.6f}".format(time_tot / count))
+
+
+
+if __name__ == '__main__':
+  #positive_negative(f=detect_stop, dir='stop')
+  bench_time(f=detect_stop, data_dir='stop/left_dataset')
