@@ -2,11 +2,13 @@
 import cv2
 
 import os
+import sys
 import time
 import glob
 
 
 from stop.test import detect_stop
+from obligation.test import detect_obligation
 
 
 def detect_from_file(f, fname, show=False, timer=False, shape=(320, 240)):
@@ -60,6 +62,12 @@ def positive_negative(f=detect_stop, dir='stop'):
       tn += 1
     time_tot += time
 
+
+  if n_pos == 0:
+    n_pos = 1e50
+  if n_neg == 0:
+    n_neg = 1e50
+
   print('\nResults for function {}:\n'.format(f.__name__))
   print('Positive exemples: {}'.format(len(pos_files)))
   print('Negative exemples: {}\n'.format(len(neg_files)))
@@ -87,5 +95,13 @@ def bench_time(f, data_dir):
 
 
 if __name__ == '__main__':
-  #positive_negative(f=detect_stop, dir='stop')
-  bench_time(f=detect_stop, data_dir='stop/left_dataset')
+  features = ['stop', 'obligation']
+
+  # Configure test name for changing type of test
+  test_name = 'stop'
+
+  module_name = "{}.test".format(test_name)
+  f_name = "detect_{}".format(test_name)
+  f = getattr(sys.modules[module_name], f_name)
+  positive_negative(f=f, dir=test_name)
+  #bench_time(f=detect_stop, data_dir='stop/left_dataset')
