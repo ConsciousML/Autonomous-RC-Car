@@ -12,3 +12,4 @@ server/config
 client/config
 html_server/config
 *.h5
+src/server/pictures
