@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+import sys
+sys.path.append('..')
+from train_cascade.stop.test import detect_stop
+from train_cascade.obligation.test import detect_obligation
+
 import RPi.GPIO as GPIO
 import video_dir
 import car_dir
@@ -76,6 +81,8 @@ while True:
     data = ''
     last_data = None
     last_img = None
+    stop_detected = obligation detected = False
+    last_stop_time = 0
 
     # Check of obstacles
     if ULTRASONIC:
@@ -108,6 +115,7 @@ while True:
 
         if ret:
             # Preprocess the image
+            img_detection = imresize(frame, (320, 240))
             img = imresize(frame, (80, 60))
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             img = bin_array(img)
@@ -127,6 +135,9 @@ while True:
                 t_process = time.time()
                 print 'image process took %0.3f s' % (t_process - t_init)
                 t_init = time.time()
+
+            stop_detected = detect_stop(img)
+            obligation_detected = detect_obligation(img)
 
             sample = sample.reshape(1, -1) # because it is a single feature
             data = clf.predict(sample)
@@ -162,6 +173,19 @@ while True:
     # Analyze the command received and control the car accordingly.
     if not data:
         break
+
+    # Detection
+    time_since_stop = time.time() - last_stop_time
+
+    if time_since_stop < 3.0:
+        data = ctrl_cmd[4]
+    elif detect_stop:
+        print 'Stop detected. Stopping...'
+        data = ctrl_cmd[4]
+        last_stop_time = time.time()
+
+    if detect_obligation:
+        print 'Obligation detected. Stopping...'
 
     if data == ctrl_cmd[0]:
         print 'motor moving forward'

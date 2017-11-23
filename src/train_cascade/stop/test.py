@@ -4,7 +4,9 @@ from matplotlib import pyplot as plt
 
 stop_cascade = cv2.CascadeClassifier('stop/class/cascade.xml')
 
-def detect_stop(img, gray, verbose=False, show=False, fname='img'):
+def detect_stop(img, verbose=False, show=False, fname='img'):
+  gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
   faces = stop_cascade.detectMultiScale(gray, 1.3, 5)
 
   for (x,y,w,h) in faces:

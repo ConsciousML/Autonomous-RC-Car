@@ -11,16 +11,16 @@ from stop.test import detect_stop
 from obligation.test import detect_obligation
 
 
+
 def detect_from_file(f, fname, show=False, timer=False, shape=(320, 240)):
   img = cv2.imread(fname)
   img = cv2.resize(img, shape)
-  gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
   diff = 0
 
   if timer:
     start = time.time()
-  stop_detected = f(img, gray, show=show, fname=fname)
+  stop_detected = f(img, show=show, fname=fname)
   if timer:
     stop = time.time()
     diff = stop - start
