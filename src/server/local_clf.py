@@ -13,6 +13,7 @@ from scipy.misc import imsave
 from scipy.misc import imresize
 import numpy as np
 import time
+from keras.models import load_model
 
 import ultrasonic
 
@@ -50,9 +51,17 @@ video_dir.home_x_y()
 car_dir.home()
 
 # Load classifier
-CLF_FOLDER = "../"
-CLF_NAME = "forest_recurent_same_nb"
-clf = joblib.load(CLF_FOLDER + CLF_NAME + ".joblib.pkl")
+
+using_keras = True
+if using_keras:
+    CLF_FOLDER = "modeles/"
+    CLF_NAME = "mobileNet2.h5"
+    clf = load_model(CLF_FOLDER + CLF_NAME)
+
+else:
+    CLF_FOLDER = "../"
+    CLF_NAME = "forest_recurent_same_nb.joblib.pkl")
+    clf = joblib.load(CLF_FOLDER + CLF_NAME)
 
 labels = ['forward', 'left', 'right']
 rev_labels = {'forward':0, 'left':1, 'right':2 }
@@ -121,6 +130,12 @@ while True:
 
             sample = sample.reshape(1, -1) # because it is a single feature
             data = clf.predict(sample)
+            print("DATA:")
+            print(data)
+
+            if using_keras:
+                pred = np.argmax(data, axis=-1)
+
             if PRINT_TIME:
                 t_pred = time.time()
                 print 'prediction took %0.3f s' % (t_pred - t_init)
