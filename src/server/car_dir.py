@@ -66,7 +66,7 @@ def home():
     off = 0
     if last_dir == 1:
         #right
-        off = -35
+        off = -30
     elif last_dir == -1:
         #left
         off = -5
