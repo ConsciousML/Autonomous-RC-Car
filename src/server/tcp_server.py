@@ -63,21 +63,21 @@ while True:
     tcpCliSock, addr = tcpSerSock.accept()
     tcpCliSock.setblocking(0)
     print '...connected from :', addr     # Print the IP address of the client connected with the server.
-
+    angle = 180
     start_time = time.time()
     while True:
         data = ''
         try:
-            data = tcpCliSock.recv(BUFSIZ).strip()    # Receive data sent from the client
-            #print 'command receved'
-            #if (len(data) > 2 and data[0] == 'O' and data[1] == 'K'):
             exec_time = time.time() - start_time
             if (exec_time >= 0.2):
                 start_time = time.time()
                 #angle = data[2:]
-                ImgThread(data, FOLDER, cv2, cam).run()
+                ImgThread(angle, FOLDER, cv2, cam).run()
                 #print 'image saved'
-                print data
+            data = tcpCliSock.recv(BUFSIZ).strip()    # Receive data sent from the client
+            tcpCliSock.send('OK')
+            #print 'command receved'
+            #if (len(data) > 2 and data[0] == 'O' and data[1] == 'K'):
 
             # Analyze the command received and control the car accordingly.
             if not data:
