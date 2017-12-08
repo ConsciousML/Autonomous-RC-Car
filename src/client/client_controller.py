@@ -182,7 +182,7 @@ def ajust_buffer(string):
     return string
 
 def send_data_angle(tcpCliSock, data, angle, label, start_time):
-    exec_time = time.time() - start_time
+    """exec_time = time.time() - start_time
     if (exec_time >= 0.1):
         data = ajust_buffer(data)
         tcpCliSock.send(data)
@@ -193,15 +193,15 @@ def send_data_angle(tcpCliSock, data, angle, label, start_time):
         str_label = str(label)
         #print 'sent_label',label
         data = 'OK' + label
-        data = ajust_buffer(data)
+        data = ajust_buffer(data#)
         tcpCliSock.send(data)
         tcpCliSock.recv(64)
         start_time = time.time()
-    else:
-        data = ajust_buffer(data)
-        tcpCliSock.send(data)
-        tcpCliSock.recv(64)
-    return start_time
+    else:"""
+    data = ajust_buffer(data)
+    tcpCliSock.send(data)
+    tcpCliSock.recv(64)
+    #return start_time
 
 if __name__ == '__main__':
 	main()
