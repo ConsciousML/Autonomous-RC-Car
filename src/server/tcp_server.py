@@ -69,11 +69,9 @@ while True:
         data = ''
         try:
             exec_time = time.time() - start_time
-            if (exec_time >= 0.2):
+            if (exec_time >= 0.5):
                 start_time = time.time()
-                #angle = data[2:]
                 ImgThread(angle, FOLDER, cv2, cam).run()
-                #print 'image saved'
             data = tcpCliSock.recv(BUFSIZ).strip()    # Receive data sent from the client
             tcpCliSock.send('OK')
             #print 'command receved'
@@ -96,6 +94,7 @@ while True:
                 car_dir.turn_right()
             elif data == ctrl_cmd[6]:
                 print 'recv home cmd'
+                angle = 180
                 car_dir.home()
             elif data == ctrl_cmd[4]:
                 print 'recv stop cmd'
