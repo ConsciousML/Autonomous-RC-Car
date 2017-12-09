@@ -22,30 +22,16 @@ while True:
             print str(angle)
     elif (not(x == last_x)):
         last_x = x
-        if (x < 0):
-            display_x = 0.5 - x * -0.5
-        else:
-            display_x = x * 0.5 + 0.5
 
         if (x > -0.03 and x < 0.03):
             if not(last_is_home):
                 print 'home    '
-                print '180'
-                print display_x
+                print '125'
             last_is_home = True
         else:
             last_is_home = False
-            if (x > 0.03):
-                angle = int(x * 45 + 180)
-            if (x < -0.03):
-                angle = int(180 + x * 145)
+            angle = ((x / 2) + 0.5) * 170 + 40
             str_angle = str(angle)
-            if (len(str_angle) == 1):
-                data = 'turn=' + str(angle) + '  '
-            if (len(str_angle) == 2):
-                data = 'turn=' + str(angle) + ' '
-            if (len(str_angle) == 3):
-                data = 'turn=' + str(angle)
             print 'x: ',x
             print 'data: ',data,'\n'
-            print display_x
+            print str_angle
