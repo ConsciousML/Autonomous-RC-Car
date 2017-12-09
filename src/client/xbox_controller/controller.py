@@ -9,10 +9,23 @@ data = ''
 start_time = time.time()
 angle = 180
 last_is_home = False
+last_start = 0
+cam_state = 0
 while True:
     t = joy.rightTrigger()
     x = joy.rightX()
     cur_trig = t > 0
+    s = joy.Start()
+    if (s != last_start):
+        last_start = s
+        if (s == 1):
+            print cam_state
+            if (cam_state == 0):
+                cam_state = 1
+                print 'Start'
+            else:
+                cam_state = 0
+                print 'Stop'
     if (not(last_trig == cur_trig)):
         last_trig = cur_trig
         if (cur_trig == 0.0):
