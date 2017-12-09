@@ -65,15 +65,14 @@ while True:
     print '...connected from :', addr     # Print the IP address of the client connected with the server.
     angle = 180
     start_time = time.time()
+    cam_state = False
     while True:
         data = ''
         try:
             exec_time = time.time() - start_time
-            if (exec_time >= 0.2):
+            if (cam_state == True and exec_time >= 0.3):
                 start_time = time.time()
-                #angle = data[2:]
                 ImgThread(angle, FOLDER, cv2, cam).run()
-                #print 'image saved'
             data = tcpCliSock.recv(BUFSIZ).strip()    # Receive data sent from the client
             tcpCliSock.send('OK')
             #print 'command receved'
@@ -82,7 +81,11 @@ while True:
             # Analyze the command received and control the car accordingly.
             if not data:
                 break
-            if data == ctrl_cmd[0]:
+            if data == 'Start':
+                cam_state = True
+            elif data == 'Stop':
+                cam_state = False
+            elif data == ctrl_cmd[0]:
                 print 'motor moving forward'
                 motor.forward()
             elif data == ctrl_cmd[1]:
@@ -96,6 +99,7 @@ while True:
                 car_dir.turn_right()
             elif data == ctrl_cmd[6]:
                 print 'recv home cmd'
+                angle = 125
                 car_dir.home()
             elif data == ctrl_cmd[4]:
                 print 'recv stop cmd'
