@@ -159,12 +159,8 @@ def main():
                 last_is_home = True
             else:
                 last_is_home = False
-                if (x > 0.03):
-                    angle = int(x * 45 + 180)
-                if (x < -0.03):
-                    angle = int(180 + x * 144)
-                if (angle == 180):
-                    continue
+                angle = ((x / 2) + 0.5) * 170 + 35
+                angle = int(angle)
                 str_angle = str(angle)
                 data = 'turn=' + str_angle
                 start_time = send_data_angle(tcpCliSock, data, str_angle, x, start_time)
