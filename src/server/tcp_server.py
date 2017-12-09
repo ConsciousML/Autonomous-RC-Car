@@ -94,7 +94,7 @@ while True:
                 car_dir.turn_right()
             elif data == ctrl_cmd[6]:
                 print 'recv home cmd'
-                angle = 180
+                angle = 125
                 car_dir.home()
             elif data == ctrl_cmd[4]:
                 print 'recv stop cmd'
