@@ -9,6 +9,8 @@ import threading
 from socket import *
 from time import ctime          # Import necessary modules
 import time
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
@@ -31,29 +33,31 @@ motor.setup(busnum=busnum)     # Initialize the Raspberry Pi GPIO connected to t
 video_dir.home_x_y()
 car_dir.home()
 
-cam = cv2.VideoCapture(0)
+cam = PiCamera()
+cam.resolution = (640, 480)
+
+cam.hflip = True
+cam.vflip = True
+
+time.sleep(2)
+
 i = 0
 
 class ImgThread(threading.Thread):
-    def __init__(self, angle, folder, cv2, cam):
+    def __init__(self, angle, folder, cam):
         threading.Thread.__init__(self)
         self.angle = angle
         self.folder = folder
-        self.cv2 = cv2
         self.cam = cam
+
     def run(self):
         global i
         i += 1
-        ret, frame = self.cam.read()
-        encode_param=[int(self.cv2.IMWRITE_JPEG_QUALITY),90]
-        result, imgencode = self.cv2.imencode('.jpg', frame, encode_param)
-        data_f = numpy.array(imgencode)
-        imgdec = self.cv2.imdecode(data_f, 1)
+
         path = self.folder + str(i) + "_" + str(self.angle) + ".jpg"
         print path
-        self.cv2.imwrite(path, imgdec)
 
-
+        cam.capture(path, use_video_port=True)
 
 while True:
     print 'Waiting for connection...'
@@ -70,9 +74,9 @@ while True:
         data = ''
         try:
             exec_time = time.time() - start_time
-            if (cam_state == True and exec_time >= 0.3):
+            if (cam_state == True and exec_time >= 0.4):
                 start_time = time.time()
-                ImgThread(angle, FOLDER, cv2, cam).run()
+                ImgThread(angle, FOLDER, cam).run()
             data = tcpCliSock.recv(BUFSIZ).strip()    # Receive data sent from the client
             tcpCliSock.send('OK')
             #print 'command receved'
@@ -162,6 +166,6 @@ while True:
             else:
                 print 'Command Error! Cannot recognize command: ' + data
         except:
-            cam.read()
+            continue
 
 tcpSerSock.close()
