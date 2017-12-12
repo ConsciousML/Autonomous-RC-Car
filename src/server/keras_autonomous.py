@@ -52,7 +52,6 @@ video_dir.setup(busnum=busnum)
 car_dir.setup(busnum=busnum)
 motor.setup(busnum=busnum)     # Initialize the Raspberry Pi GPIO connected to the DC motor.
 motor.setSpeed(50)
-#motor.forward()
 video_dir.home_x_y()
 car_dir.home()
 
@@ -61,7 +60,7 @@ car_dir.home()
 using_keras = True
 if using_keras:
     CLF_FOLDER = "../../models/"
-    CLF_NAME = "hive_fast_driving.h5"
+    CLF_NAME = "first_turn_left.h5"
     clf = load_model(CLF_FOLDER + CLF_NAME)
     print("Classifier loaded")
 else:
@@ -78,6 +77,7 @@ cam = cv2.VideoCapture(0)
 print("ok")
 
 i = 0
+motor.forward()
 while True:
     data = ''
     last_data = None
@@ -186,11 +186,7 @@ while True:
         if pred < 0.03 and pred > -0.03:
             data = ctrl_cmd[6]
         else:
-            angle = 0.
-            if pred > 0.03:
-                angle = int(pred * 45 + 180)
-            else:
-                angle = int(pred * 144 + 180)
+            angle = int((pred / 2 + 0.5) * 170 + 35)
             data = "turn=" + str(angle)
 
     print(data)
