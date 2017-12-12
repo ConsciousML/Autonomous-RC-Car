@@ -18,6 +18,8 @@ from scipy.misc import imresize
 import numpy as np
 import time
 from keras.models import load_model
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 
 import ultrasonic
 
@@ -73,11 +75,15 @@ rev_labels = {'forward':0, 'left':1, 'right':2 }
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
 # Component initialization
-cam = cv2.VideoCapture(0)
-print("ok")
+cam = PiCamera()
+cam.resolution = (640, 480)
+cam.hflip = True
+cam.vflip = True
+
+time.sleep(2)
 
 i = 0
-motor.forward()
+#motor.forward()
 while True:
     data = ''
     last_data = None
@@ -109,57 +115,61 @@ while True:
         # Take input from camera
         if PRINT_TIME:
             t_init = time.time()
-        ret, frame = cam.read()
+        #ret, frame = cam.read()
+        output = np.empty(480 * 640 * 3, dtype=np.uint8)    
+        cam.capture(output, 'bgr')
+        output = output.reshape((480, 640, 3))
+        crop_idx = int(output.shape[0] / 2)
+        output = output[crop_idx:, :]
+        cv2.imwrite("test_img.jpg", output)
+        print(output.shape)
         if PRINT_TIME:
             t_imread = time.time()
             print 'imread took %0.3f s' % (t_imread - t_init)
             t_init = time.time()
 
-        if ret:
-            # Preprocess the image
-            img_detection = imresize(frame, (120, 160))
-            #img = imresize(frame, (80, 60))
-            #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            #img = bin_array(img)
-            #img = img.reshape(1, -1) # because it is a single feature
+        # Preprocess the image
+        img_detection = imresize(output, (120, 160))
+        #img = imresize(frame, (80, 60))
+        #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        #img = bin_array(img)
+        #img = img.reshape(1, -1) # because it is a single feature
 
-            # Build recurrent programming
-            '''sample = np.ones((1, 80 * 60 + 1))
-            if last_img is None:
-                sample = np.append(img,  img)
-                sample = np.append(sample, rev_labels['forward']) # because what else?
-            else:
-                sample = np.append(img, last_img)
-                sample = np.append(sample, rev_labels[last_data])'''
+        # Build recurrent programming
+        '''sample = np.ones((1, 80 * 60 + 1))
+        if last_img is None:
+            sample = np.append(img,  img)
+            sample = np.append(sample, rev_labels['forward']) # because what else?
+        else:
+            sample = np.append(img, last_img)
+            sample = np.append(sample, rev_labels[last_data])'''
 
-            # Predict
-            if PRINT_TIME:
-                t_process = time.time()
-                print 'image process took %0.3f s' % (t_process - t_init)
-                t_init = time.time()
+        # Predict
+        if PRINT_TIME:
+            t_process = time.time()
+            print 'image process took %0.3f s' % (t_process - t_init)
+            t_init = time.time()
 
-            if STOP:
-                stop_detected = detect_stop(img_detection)
+        if STOP:
+            stop_detected = detect_stop(img_detection)
             obligation_detected = detect_obligation(img_detection)
 
-            #sample = sample.reshape(1, -1) # because it is a single feature
+        #sample = sample.reshape(1, -1) # because it is a single feature
 
-            if using_keras:
-                pred = clf.predict(img_detection.reshape((1, 120, 160, 3)))[0][0][0]
+        if using_keras:
+            pred = clf.predict(img_detection.reshape((1, 120, 160, 3)))[0][0][0]
 
-            if PRINT_TIME:
-                t_pred = time.time()
-                print 'prediction took %0.3f s' % (t_pred - t_init)
+        if PRINT_TIME:
+            t_pred = time.time()
+            print 'prediction took %0.3f s' % (t_pred - t_init)
 
-            #data = labels[int(data[0])]
-            print '%2d: prediction: %s' % (i, pred)
+        #data = labels[int(data[0])]
+        print '%2d: prediction: %s' % (i, pred)
 
-            # Update recurrent
-            #last_img = img
-            #last_data = data
+        # Update recurrent
+        #last_img = img
+        #last_data = data
 
-        else:
-            print "*** Problems taking a picture."
         i += 1
     except:
         print '*** Exception'
@@ -167,7 +177,6 @@ while True:
         if ULTRASONIC:
             ultrason.stop()
             ultrason.join()
-        cam.release()
         raise
 
     # Detection
@@ -268,8 +277,6 @@ while True:
 
     else:
         print 'Command Error! Cannot recognize command: ' + data
-
-cam.release()
 
 # Proper thread kill
 if ULTRASONIC:
