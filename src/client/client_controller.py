@@ -16,13 +16,12 @@ from sklearn.externals import joblib
 import PIL
 
 
-os.system('xset r off')
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
 
 HOST = '192.168.43.46'    # Laure (Ionis's Down) IP address
 HOST = '172.20.10.11'     # Thibaut (iPhone) IP address
-HOST = '192.168.1.22'     # Thibaut (iPhone) IP address
+HOST = '192.168.1.48'
 PORT = 21567
 BUFSIZ = 1024             # buffer size
 ADDR = (HOST, PORT)
@@ -46,7 +45,7 @@ def recvall(sock, count):
     return buf
 
 class Counter:
-    i = 1437
+    i = 1
 
 def get_img(angle):
     global dira
