@@ -142,11 +142,20 @@ def main():
     last_is_home = False
     last_start = 0
     cam_state = 0
+    last_t = -1
     while True:
         t = joy.rightTrigger()
+        if (last_t != t)
+        {
+            last_t = t
+            msg = "spd=" + t
+            send_data(tcpCliSock,)
+        }
+
         x = joy.rightX()
         cur_trig = t > 0
         s = joy.Start()
+
         if (s != last_start):
             last_start = s
             if (s == 1):

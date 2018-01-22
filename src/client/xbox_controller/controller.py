@@ -13,6 +13,8 @@ last_start = 0
 cam_state = 0
 while True:
     t = joy.rightTrigger()
+    print(t)
+    """
     x = joy.rightX()
     cur_trig = t > 0
     s = joy.Start()
@@ -48,3 +50,4 @@ while True:
             print 'x: ',x
             print 'data: ',data,'\n'
             print str_angle
+    """
