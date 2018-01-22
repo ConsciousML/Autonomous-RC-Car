@@ -11,9 +11,16 @@ angle = 180
 last_is_home = False
 last_start = 0
 cam_state = 0
+
+def normalize_label(old_val, old_min, old_max, new_min, new_max):
+    old_val = float(old_val)
+    new_val = (((old_val - old_min) * (new_max - new_min)) / (old_max - old_min)) + new_min
+    return new_val
+
 while True:
     t = joy.rightTrigger()
-    print(t)
+    val = normalize_label(t, 0.0, 1.0, 40, 100)
+    print(val)
     """
     x = joy.rightX()
     cur_trig = t > 0
