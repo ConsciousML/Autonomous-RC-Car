@@ -62,7 +62,7 @@ car_dir.home()
 using_keras = True
 if using_keras:
     CLF_FOLDER = "../../models/"
-    CLF_NAME = "first_turn_left.h5"
+    CLF_NAME = "new_cam.h5"
     clf = load_model(CLF_FOLDER + CLF_NAME)
     print("Classifier loaded")
 else:
@@ -83,7 +83,7 @@ cam.vflip = True
 time.sleep(2)
 
 i = 0
-#motor.forward()
+motor.forward()
 while True:
     data = ''
     last_data = None
@@ -117,7 +117,7 @@ while True:
             t_init = time.time()
         #ret, frame = cam.read()
         output = np.empty(480 * 640 * 3, dtype=np.uint8)    
-        cam.capture(output, 'bgr')
+        cam.capture(output, 'bgr', use_video_port=True)
         output = output.reshape((480, 640, 3))
         crop_idx = int(output.shape[0] / 2)
         output = output[crop_idx:, :]
