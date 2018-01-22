@@ -21,7 +21,7 @@ ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'ho
 
 HOST = '192.168.43.46'    # Laure (Ionis's Down) IP address
 HOST = '172.20.10.11'     # Thibaut (iPhone) IP address
-HOST = '192.168.1.48'
+HOST = '192.168.1.26'
 PORT = 21567
 BUFSIZ = 1024             # buffer size
 ADDR = (HOST, PORT)
@@ -153,8 +153,8 @@ def main():
         t = joy.rightTrigger()
         if (last_t != t):
             last_t = t
-	    val = normalize_label(t, 0.0, 1.0, 40.0, 100.0)
-            msg = "speed=" + t
+	    val = int(normalize_label(t, 0.0, 1.0, 27.0, 102.0))
+            msg = "speed" + str(val)
             send_data(tcpCliSock, msg)
 
         x = joy.rightX()
