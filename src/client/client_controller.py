@@ -117,6 +117,7 @@ def xy_home(event):
 
 spd = 50
 
+
 def changeSpeed():
     tmp = 'speed'
     global spd
@@ -131,6 +132,11 @@ def normalize_label(x):
     else:
         return x * 0.5 + 0.5
 
+def normalize_label(old_val, old_min, old_max, new_min, new_max):
+    old_val = float(old_val)
+    new_val = (((old_val - old_min) * (new_max - new_min)) / (old_max - old_min)) + new_min
+    return new_val
+
 def main():
     changeSpeed()
     joy = xbox.Joystick()
@@ -142,11 +148,19 @@ def main():
     last_is_home = False
     last_start = 0
     cam_state = 0
+    last_t = -1
     while True:
         t = joy.rightTrigger()
+        if (last_t != t):
+            last_t = t
+	    val = normalize_label(t, 0.0, 1.0, 40.0, 100.0)
+            msg = "speed=" + t
+            send_data(tcpCliSock, msg)
+
         x = joy.rightX()
         cur_trig = t > 0
         s = joy.Start()
+
         if (s != last_start):
             last_start = s
             if (s == 1):
