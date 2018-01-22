@@ -41,20 +41,21 @@ cam.vflip = True
 
 time.sleep(2)
 
-i = 0
+i = 7000
 
 class ImgThread(threading.Thread):
-    def __init__(self, angle, folder, cam):
+    def __init__(self, angle, speed, folder, cam):
         threading.Thread.__init__(self)
         self.angle = angle
         self.folder = folder
         self.cam = cam
+        self.speed = speed
 
     def run(self):
         global i
         i += 1
 
-        path = self.folder + str(i) + "_" + str(self.angle) + ".jpg"
+        path = self.folder + str(i) + "_" + str(self.angle) + "_" + str(self.speed) + ".jpg"
         print path
 
         cam.capture(path, use_video_port=True)
@@ -67,7 +68,7 @@ while True:
     tcpCliSock, addr = tcpSerSock.accept()
     tcpCliSock.setblocking(0)
     print '...connected from :', addr     # Print the IP address of the client connected with the server.
-    angle = 180
+    angle = 125
     start_time = time.time()
     cam_state = False
     while True:
@@ -76,7 +77,7 @@ while True:
             exec_time = time.time() - start_time
             if (cam_state == True and exec_time >= 0.4):
                 start_time = time.time()
-                ImgThread(angle, FOLDER, cam).run()
+                ImgThread(angle, spd, FOLDER, cam).run()
             data = tcpCliSock.recv(BUFSIZ).strip()    # Receive data sent from the client
             tcpCliSock.send('OK')
             #print 'command receved'
