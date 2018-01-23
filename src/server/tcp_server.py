@@ -41,7 +41,7 @@ cam.vflip = True
 
 time.sleep(2)
 
-i = 7000
+i = 530
 
 def padding_img_id(string_i):
     padding = 7 - len(string_i)
