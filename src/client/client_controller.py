@@ -153,7 +153,7 @@ def main():
         t = joy.rightTrigger()
         if (last_t != t):
             last_t = t
-	    val = int(normalize_label(t, 0.0, 1.0, 27.0, 102.0))
+	    val = int(normalize_label(t, 0.0, 1.0, 40.0, 102.0))
             msg = "speed" + str(val)
             send_data(tcpCliSock, msg)
 
