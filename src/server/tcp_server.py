@@ -41,7 +41,7 @@ cam.vflip = True
 
 time.sleep(2)
 
-i = 7000
+i = 530
 
 class ImgThread(threading.Thread):
     def __init__(self, angle, speed, folder, cam):

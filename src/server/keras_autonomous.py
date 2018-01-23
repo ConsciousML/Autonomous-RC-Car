@@ -62,7 +62,7 @@ car_dir.home()
 using_keras = True
 if using_keras:
     CLF_FOLDER = "../../models/"
-    CLF_NAME = "new_cam.h5"
+    CLF_NAME = "speed_model.h5"
     clf = load_model(CLF_FOLDER + CLF_NAME)
     print("Classifier loaded")
 else:
@@ -83,7 +83,9 @@ cam.vflip = True
 time.sleep(2)
 
 i = 0
+
 motor.forward()
+
 while True:
     data = ''
     last_data = None
@@ -157,7 +159,10 @@ while True:
         #sample = sample.reshape(1, -1) # because it is a single feature
 
         if using_keras:
-            pred = clf.predict(img_detection.reshape((1, 120, 160, 3)))[0][0][0]
+            pred = clf.predict(img_detection.reshape((1, 120, 160, 3)))
+            speed_pred = pred[1][0][0]
+            motor.setSpeed(int(speed_pred * 62 + 40))
+            pred = pred[0][0][0]
 
         if PRINT_TIME:
             t_pred = time.time()
