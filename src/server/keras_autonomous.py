@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 import sys
-from stop import detect_stop
-from obligation import detect_obligation
 
 import RPi.GPIO as GPIO
 import video_dir
@@ -21,10 +19,11 @@ from keras.models import load_model
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 
+import sign_classification
+
 import ultrasonic
 
 # Flags
-PRINT_TIME = False
 ULTRASONIC = False
 STOP = False
 
@@ -36,17 +35,6 @@ if ULTRASONIC:
     obstacleExist = False
 
 GPIO.setmode(GPIO.BOARD)
-
-# To be imported from externals
-def bin_array(numpy_array, threshold=160):
-    """Binarize a numpy array."""
-    for i in range(len(numpy_array)):
-        for j in range(len(numpy_array[0])):
-            if numpy_array[i][j] > threshold:
-                numpy_array[i][j] = 255
-            else:
-                numpy_array[i][j] = 0
-    return numpy_array
 
 # Settings initialization
 busnum = 1          # Edit busnum to 0, if you uses Raspberry Pi 1 or 0
@@ -84,7 +72,7 @@ time.sleep(2)
 
 i = 0
 
-motor.forward()
+#motor.forward()
 
 while True:
     data = ''
@@ -112,51 +100,19 @@ while True:
                 motor.forward()
 
     try:
-        print '%2d: read image' % i
-
         # Take input from camera
-        if PRINT_TIME:
-            t_init = time.time()
-        #ret, frame = cam.read()
-        output = np.empty(480 * 640 * 3, dtype=np.uint8)    
-        cam.capture(output, 'bgr', use_video_port=True)
-        output = output.reshape((480, 640, 3))
+        output_full = np.empty(480 * 640 * 3, dtype=np.uint8)
+        cam.capture(output_full, 'bgr', use_video_port=True)
+
+        output = output_full.reshape((480, 640, 3))
         crop_idx = int(output.shape[0] / 2)
         output = output[crop_idx:, :]
-        cv2.imwrite("test_img.jpg", output)
-        print(output.shape)
-        if PRINT_TIME:
-            t_imread = time.time()
-            print 'imread took %0.3f s' % (t_imread - t_init)
-            t_init = time.time()
 
-        # Preprocess the image
         img_detection = imresize(output, (120, 160))
-        #img = imresize(frame, (80, 60))
-        #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        #img = bin_array(img)
-        #img = img.reshape(1, -1) # because it is a single feature
-
-        # Build recurrent programming
-        '''sample = np.ones((1, 80 * 60 + 1))
-        if last_img is None:
-            sample = np.append(img,  img)
-            sample = np.append(sample, rev_labels['forward']) # because what else?
-        else:
-            sample = np.append(img, last_img)
-            sample = np.append(sample, rev_labels[last_data])'''
 
         # Predict
-        if PRINT_TIME:
-            t_process = time.time()
-            print 'image process took %0.3f s' % (t_process - t_init)
-            t_init = time.time()
-
         if STOP:
-            stop_detected = detect_stop(img_detection)
-            obligation_detected = detect_obligation(img_detection)
-
-        #sample = sample.reshape(1, -1) # because it is a single feature
+            stop_detected = sign_classification.predict(output_full)
 
         if using_keras:
             pred = clf.predict(img_detection.reshape((1, 120, 160, 3)))
@@ -164,16 +120,7 @@ while True:
             motor.setSpeed(int(speed_pred * 62 + 40))
             pred = pred[0][0][0]
 
-        if PRINT_TIME:
-            t_pred = time.time()
-            print 'prediction took %0.3f s' % (t_pred - t_init)
-
-        #data = labels[int(data[0])]
         print '%2d: prediction: %s' % (i, pred)
-
-        # Update recurrent
-        #last_img = img
-        #last_data = data
 
         i += 1
     except:
@@ -188,10 +135,6 @@ while True:
     time_since_stop = time.time() - last_stop_time
 
     data = ctrl_cmd[0]
-   # if time_since_stop < 3:
-   #     data = ctrl_cmd[4]
-   # elif time_since_stop < 6:
-   #     pass
     if stop_detected:
         print 'Stop detected. Stopping...'
         data = ctrl_cmd[4]
@@ -202,11 +145,6 @@ while True:
         else:
             angle = int((pred / 2 + 0.5) * 170 + 35)
             data = "turn=" + str(angle)
-
-    print(data)
-
-    #if obligation_detected::
-    #    print 'Obligation detected. Stopping...'
 
     if data == ctrl_cmd[0]:
         print 'motor moving forward'
