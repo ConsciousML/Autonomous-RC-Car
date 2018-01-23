@@ -43,6 +43,12 @@ time.sleep(2)
 
 i = 7000
 
+def padding_img_id(string_i):
+    padding = 7 - len(string_i)
+    for i in range(padding):
+        string_i = "0" + string_i
+    return string_i
+
 class ImgThread(threading.Thread):
     def __init__(self, angle, speed, folder, cam):
         threading.Thread.__init__(self)
@@ -55,7 +61,7 @@ class ImgThread(threading.Thread):
         global i
         i += 1
 
-        path = self.folder + str(i) + "_" + str(self.angle) + "_" + str(self.speed) + ".jpg"
+        path = self.folder + padding_img_id(str(i)) + "_" + str(self.angle) + "_" + str(self.speed) + ".jpg"
         print path
 
         cam.capture(path, use_video_port=True)
