@@ -25,7 +25,7 @@ import ultrasonic
 
 # Flags
 ULTRASONIC = False
-STOP = True
+STOP = False
 
 # Obstacle Detection
 sleep_time = 0.3
@@ -68,7 +68,7 @@ time.sleep(2)
 
 i = 0
 
-#motor.forward()
+motor.forward()
 
 while True:
     data = ''
@@ -93,7 +93,7 @@ while True:
             else:
                 print '*** Can move! Obstacle is now at distance %f' % ultrason.dist
                 obstacleExist = False
-                motor.forward()
+                #motor.forward()
 
     try:
         # Take input from camera
