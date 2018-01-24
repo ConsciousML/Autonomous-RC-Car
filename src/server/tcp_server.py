@@ -4,6 +4,7 @@ import video_dir
 import car_dir
 import motor
 import cv2
+import os
 import numpy
 import threading
 from socket import *
@@ -41,7 +42,9 @@ cam.vflip = True
 
 time.sleep(2)
 
-i = 530
+for root, dirs, files in os.walk("pictures/"):
+    files = sorted(files)
+    i = int(files[len(files) - 1].split("_")[0])
 
 def padding_img_id(string_i):
     padding = 7 - len(string_i)
