@@ -25,7 +25,7 @@ import ultrasonic
 
 # Flags
 ULTRASONIC = False
-STOP = False
+STOP = True
 
 # Obstacle Detection
 sleep_time = 0.3
@@ -53,10 +53,6 @@ if using_keras:
     CLF_NAME = "speed_model.h5"
     clf = load_model(CLF_FOLDER + CLF_NAME)
     print("Classifier loaded")
-else:
-    CLF_FOLDER = "../"
-    CLF_NAME = "forest_recurent_same_nb.joblib.pkl"
-    clf = joblib.load(CLF_FOLDER + CLF_NAME)
 
 labels = ['forward', 'left', 'right']
 rev_labels = {'forward':0, 'left':1, 'right':2 }
@@ -104,9 +100,9 @@ while True:
         output_full = np.empty(480 * 640 * 3, dtype=np.uint8)
         cam.capture(output_full, 'bgr', use_video_port=True)
 
-        output = output_full.reshape((480, 640, 3))
-        crop_idx = int(output.shape[0] / 2)
-        output = output[crop_idx:, :]
+        output_full = output_full.reshape((480, 640, 3))
+        crop_idx = int(output_full.shape[0] / 2)
+        output = output_full[crop_idx:, :]
 
         img_detection = imresize(output, (120, 160))
 
@@ -119,8 +115,6 @@ while True:
             speed_pred = pred[1][0][0]
             motor.setSpeed(int(speed_pred * 62 + 40))
             pred = pred[0][0][0]
-
-        print '%2d: prediction: %s' % (i, pred)
 
         i += 1
     except:
@@ -137,14 +131,14 @@ while True:
     data = ctrl_cmd[0]
     if stop_detected:
         print 'Stop detected. Stopping...'
-        data = ctrl_cmd[4]
+        #data = ctrl_cmd[4]
         last_stop_time = time.time()
+
+    if pred < 0.03 and pred > -0.03:
+        data = ctrl_cmd[6]
     else:
-        if pred < 0.03 and pred > -0.03:
-            data = ctrl_cmd[6]
-        else:
-            angle = int((pred / 2 + 0.5) * 170 + 35)
-            data = "turn=" + str(angle)
+        angle = int((pred / 2 + 0.5) * 170 + 35)
+        data = "turn=" + str(angle)
 
     if data == ctrl_cmd[0]:
         print 'motor moving forward'
