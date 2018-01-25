@@ -3,22 +3,23 @@ from keras.applications.mobilenet import preprocess_input
 import numpy as np
 import cv2
 
-sign_model = load_model("../../models/sign_classification.h5")
+#sign_model = load_model("../../models/sign_classification.h5")
 i = 0
 
 def predict(imgrgb):
+    return False
     print "Lauching predictions"
-    offset = 9
+    offset = 4
 
     img = imgrgb
     imgs = imgrgb
     imgh = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-    lowerl_red = np.array([0,40,40])
+    lowerl_red = np.array([0,0,0])
     upperl_red = np.array([10,255,255])
 
 
-    loweru_red = np.array([160,40,40])
+    loweru_red = np.array([160,0,0])
     upperu_red = np.array([179,255,255])
     mask1 = cv2.inRange(imgh, lowerl_red, upperl_red)
     mask2 = cv2.inRange(imgh, loweru_red, upperu_red)
@@ -36,9 +37,9 @@ def predict(imgrgb):
     for i in range(len(contours)):
         cnt = contours[i]
         (x,y),radius = cv2.minEnclosingCircle(cnt)
-        if radius > 10:
+        if radius > 10 and radius < 50:
             x,y,w,h = cv2.boundingRect(cnt)
-            img2 = imgs[y - offset : y + h + offset, x - offset : x + w + offset]
+            img2 = imgs[y - offset - radius : y + radius + offset, x - offset - radius : x + radius + offset]
             try:
                 crop_img = cv2.resize(img2, dsize=(32, 32), interpolation=cv2.INTER_NEAREST)
                 lab = sign_model.predict(preprocess_input(crop_img.astype(float)).reshape((1, 32, 32, 3)))
