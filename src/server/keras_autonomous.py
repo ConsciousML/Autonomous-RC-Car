@@ -50,7 +50,7 @@ car_dir.home()
 using_keras = True
 if using_keras:
     CLF_FOLDER = "../../models/"
-    CLF_NAME = "speed_model.h5"
+    CLF_NAME = "speed_model_old.h5"
     clf = load_model(CLF_FOLDER + CLF_NAME)
     print("Classifier loaded")
 
