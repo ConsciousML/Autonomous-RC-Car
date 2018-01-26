@@ -29,8 +29,8 @@ from time import sleep
 import sys
 
 # Flags
-ULTRASONIC = False
-STOP = True
+ULTRASONIC = True
+STOP = False
 
 # Obstacle Detection
 sleep_time = 0.3
@@ -54,7 +54,7 @@ motor.ctrl(0)
 using_keras = True
 if using_keras:
     CLF_FOLDER = "../../models/"
-    CLF_NAME = "speed_model_old.h5"
+    CLF_NAME = "model_aug_bright.h5"
     clf = load_model(CLF_FOLDER + CLF_NAME)
     print("Classifier loaded")
 
@@ -90,7 +90,7 @@ class SignsThread(threading.Thread):
                         sleep(3)
                         lstop_detected = True
                         stop_detected = False
-                        sleep(1)
+                        sleep(2)
 
 threadss = SignsThread()
 threadss.start()
@@ -103,7 +103,7 @@ if ULTRASONIC:
     ultrason.start()
     obstacleExist = False
 
-#motor.forward()
+motor.forward()
 
 while True:
     data = ''
@@ -152,10 +152,9 @@ while True:
     else:
         angle = int((pred / 2 + 0.5) * 170 + 35)
         data = "turn=" + str(angle)
-        data = ctrl_cmd[6]
 
     if lstop_detected:
-        #motor.forward()
+        motor.forward()
         lstop_detected = False
 
     if data == ctrl_cmd[0]:
