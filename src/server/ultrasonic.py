@@ -36,8 +36,11 @@ def measure():
   while GPIO.input(GPIO_ECHO)==1:
       stop = time.time()
 
-  elapsed = stop-start
-  distance = (elapsed * speedSound)/2
+  try:
+     elapsed = stop - start
+     distance = (elapsed * speedSound) / 2
+  except:
+      return 0
 
   return distance
 
