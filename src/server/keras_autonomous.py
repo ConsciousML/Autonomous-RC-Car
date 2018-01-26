@@ -22,19 +22,21 @@ from picamera import PiCamera
 import sign_classification
 
 import ultrasonic
+import threading
+
+from time import sleep
+
+import sys
 
 # Flags
 ULTRASONIC = False
-STOP = False
+STOP = True
 
 # Obstacle Detection
 sleep_time = 0.3
-if ULTRASONIC:
-    ultrason = ultrasonic.UltrasonicAsync(sleep_time)
-    ultrason.start()
-    obstacleExist = False
 
 GPIO.setmode(GPIO.BOARD)
+
 
 # Settings initialization
 busnum = 1          # Edit busnum to 0, if you uses Raspberry Pi 1 or 0
@@ -44,6 +46,8 @@ motor.setup(busnum=busnum)     # Initialize the Raspberry Pi GPIO connected to t
 motor.setSpeed(50)
 video_dir.home_x_y()
 car_dir.home()
+
+motor.ctrl(0)
 
 # Load classifier
 
@@ -64,81 +68,95 @@ cam.resolution = (640, 480)
 cam.hflip = True
 cam.vflip = True
 
-time.sleep(2)
-
 i = 0
 
-motor.forward()
+output_full = None
+stop_detected = False
+lstop_detected = False
+
+class SignsThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        if STOP:
+            while True:
+                if output_full is not None:
+                    global stop_detected
+                    global lstop_detected
+                    stop_detected = sign_classification.predict(output_full)
+                    if (stop_detected):
+                        print "STOP DETECTED"
+                        sleep(3)
+                        lstop_detected = True
+                        stop_detected = False
+                        sleep(1)
+
+threadss = SignsThread()
+threadss.start()
+
+time.sleep(2)
+
+print 'Launching Main loop'
+if ULTRASONIC:
+    ultrason = ultrasonic.UltrasonicAsync(sleep_time)
+    ultrason.start()
+    obstacleExist = False
+
+#motor.forward()
 
 while True:
     data = ''
-    last_data = None
-    last_img = None
-    stop_detected = False
-    obligation_detected = False
-    last_stop_time = 0
 
     # Check of obstacles
     if ULTRASONIC:
         print '%2d: check if obstacle' % i
-        if ultrason.dist < 60:
+        if ultrason.dist < 20:
             print '*** Found new obstacle at distance %f' % ultrason.dist
             motor.ctrl(0)
             obstacleExist = True
 
         while obstacleExist:
             time.sleep(sleep_time)
-            if ultrason.dist < 60:
+            if ultrason.dist < 20:
                 print 'Can not move. Obstacle is at distance %f' % ultrason.dist
             else:
                 print '*** Can move! Obstacle is now at distance %f' % ultrason.dist
                 obstacleExist = False
-                #motor.forward()
+                motor.forward()
 
-    try:
-        # Take input from camera
-        output_full = np.empty(480 * 640 * 3, dtype=np.uint8)
-        cam.capture(output_full, 'bgr', use_video_port=True)
+    # Take input from camera
+    output_full2 = np.empty(480 * 640 * 3, dtype=np.uint8)
+    cam.capture(output_full2, 'bgr', use_video_port=True)
 
-        output_full = output_full.reshape((480, 640, 3))
-        crop_idx = int(output_full.shape[0] / 2)
-        output = output_full[crop_idx:, :]
+    output_full = output_full2.reshape((480, 640, 3))
+    crop_idx = int(output_full.shape[0] / 2)
+    output = output_full[crop_idx:, :]
 
-        img_detection = imresize(output, (120, 160))
+    img_detection = imresize(output, (120, 160))
 
-        # Predict
-        if STOP:
-            stop_detected = sign_classification.predict(output_full)
+    if using_keras:
+        pred = clf.predict(img_detection.reshape((1, 120, 160, 3)))
+        speed_pred = pred[1][0][0]
+        motor.setSpeed(int(speed_pred * 62 + 40))
+        pred = pred[0][0][0]
 
-        if using_keras:
-            pred = clf.predict(img_detection.reshape((1, 120, 160, 3)))
-            speed_pred = pred[1][0][0]
-            motor.setSpeed(int(speed_pred * 62 + 40))
-            pred = pred[0][0][0]
-
-        i += 1
-    except:
-        print '*** Exception'
-        motor.stop()
-        if ULTRASONIC:
-            ultrason.stop()
-            ultrason.join()
-        raise
-
-    # Detection
-    time_since_stop = time.time() - last_stop_time
+    i += 1
 
     data = ctrl_cmd[0]
     if stop_detected:
         print 'Stop detected. Stopping...'
-        #data = ctrl_cmd[4]
-        last_stop_time = time.time()
-
-    if pred < 0.03 and pred > -0.03:
+        data = ctrl_cmd[4]
+    elif pred < 0.03 and pred > -0.03:
         data = ctrl_cmd[6]
     else:
         angle = int((pred / 2 + 0.5) * 170 + 35)
         data = "turn=" + str(angle)
+        data = ctrl_cmd[6]
+
+    if lstop_detected:
+        #motor.forward()
+        lstop_detected = False
 
     if data == ctrl_cmd[0]:
         print 'motor moving forward'
