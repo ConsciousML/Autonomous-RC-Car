@@ -11,12 +11,7 @@ as well as flipping the angle label to augment the training data
 
 def flip_angle(label):
     """Return the inverse angle of the input"""
-    if (label >= 125):
-        diff = label - 125
-        return 125 - diff
-    else:
-        diff = 125 - label
-        return 125 + diff
+    return 1. - label
 
 
 def flip_image(image_path, label):
