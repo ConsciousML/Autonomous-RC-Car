@@ -2,7 +2,7 @@ import os
 
 """
 
-This module contains function the gather, move or modify files.
+This python file contains function that gather, move or modify files.
 
 """
 
@@ -10,7 +10,7 @@ def get_data_paths(dir):
     """Returns the images and labels from a directory"""
     image_plist = []
     label_plist = []
-    for root, dirs, files in os.walk(dir):
+    for root, _, files in os.walk(dir):
         for f in files:
             if not f.endswith('.jpg'):
                 continue
