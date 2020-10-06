@@ -1,4 +1,5 @@
 import json
+import numpy as np
 
 """
 
@@ -24,7 +25,6 @@ def read_json_label(path):
     with open(path) as f:
         label_dict = json.load(f)
     labels = np.zeros(len(label_dict))
-    dict_keys = label_dict.keys()
     idx = 0
     for key in label_dict.keys():
         labels[idx] = label_dict[key]
