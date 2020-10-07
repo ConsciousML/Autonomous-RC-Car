@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from socket import *      # Import necessary modules
+from socket import * 
 import numpy
 import cv2
 import os
@@ -12,13 +12,21 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.externals import joblib
 import PIL
 
+"""
+
+This file contains the code for the client i.e the deviced connected
+to the remote-controlled car. It defined all the function to send
+action messages to the server i.e the remote controlled car.
+
+
+"""
+
 
 os.system('xset r off')
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
-
-HOST = '192.168.43.46'    # Laure (Ionis's Down) IP address
-HOST = '172.20.10.11'     # Thibaut (iPhone) IP address
+HOST = '192.168.43.46'
+HOST = '172.20.10.11'
 PORT = 21567
 BUFSIZ = 1024             # buffer size
 ADDR = (HOST, PORT)
@@ -33,6 +41,7 @@ dic_dir = {-1: "left", 0: "forward", 1: "right"}
 dic_dir_l = {1: "left", 0: "home", 2: "right"}
 clf = joblib.load("../forest_defaultparams.joblib.pkl")
 
+
 def recvall(sock, count):
     buf = b''
     while count:
@@ -42,25 +51,12 @@ def recvall(sock, count):
         count -= len(newbuf)
     return buf
 
-class Counter:
-    i = 1437
-
 def get_img():
     length = recvall(tcpCliSock, 16)
-    print 'rec len'
     stringData = recvall(tcpCliSock, int(length))
-    print 'rec img'
     img = numpy.fromstring(stringData, dtype='uint8')
     imgdec = cv2.imdecode(img, 1)
     return imgdec
-
-'''
-def get_image():
-    img = tcpCliSock.recv()
-
-top.bin("<<GetImg>>", get_image)
-top.event_generate("<<GetImg>>", when="tail")
-'''
 
 def process_dir(dir):
     print dir
@@ -147,21 +143,9 @@ def main():
         img = img.reshape((1,60*80))
 
         data = dic_dir_l[clf.predict(img)[0]]
-        print data
         tcpCliSock.send(data)
 
         tcpCliSock.recv(64)
-
-        """tcpCliSock.send("OK")
-        get_img()
-        tcpCliSock.send("stop")
-        tcpCliSock.recv(64)
-
-        tcpCliSock.send("OK")
-        get_img()
-        tcpCliSock.send("forward")
-        tcpCliSock.recv(64)"""
-
 
 if __name__ == '__main__':
 	main()
