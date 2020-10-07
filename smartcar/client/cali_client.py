@@ -4,6 +4,13 @@ from Tkinter import *
 from socket import *      # Import necessary modules
 import os
 
+"""
+
+This file contains the calibration actions of the remote controlled car.
+Binding all the client-server messages to actions.
+
+"""
+
 top = Tk()   # Create a top window
 top.title('Raspberry Pi Smart Video Car Calibration')
 
