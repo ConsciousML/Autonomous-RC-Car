@@ -1,4 +1,5 @@
 # Autonomous Remote Controlled Car
+![title](data\images\smartcar.jpg)
 
 ## Objective
 The goal of this project was to build an autonomous remote controlled car using deep learning.
