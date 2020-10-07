@@ -1,5 +1,0 @@
-pillow
-numpy
-scikit-learn
-scipy
-keras
