@@ -12,7 +12,24 @@ from smartcar.utils.read import read_json_label
 from smartcar.learn.brightness import randomize_brightness
 
 class CustomGenerator(Sequence):
+    """Class that yields the batch of data to the model
+
+    Inherits from Sequence class of Keras. Every image in the batch
+    is verticaly flipped and its brightness is altered for more
+    robustness.
+
+    Attributes:
+        image_fnames: A list containing the paths of the images.
+        label_fnames: A list containing the paths of the labels
+        batch_size: A positive integer for the batch size.
+        image_shape: A triple containing the (width, height, channels) of
+            the images.
+        shuffle: A boolean for shuffling the data.
+
+    """
+
     def __init__(self, image_fnames, label_fnames, batch_size, image_shape, shuffle=True):
+        """Initialize the generator class"""
         self.image_fnames = np.array(image_fnames)
         self.label_fnames = np.array(label_fnames)
         self.batch_size = batch_size
@@ -25,6 +42,7 @@ class CustomGenerator(Sequence):
             self.label_fnames = self.label_fnames[indices]
     
     def load_image(self, path, flip=False):
+        """Loads an image from path, flips and apply random brightness"""
         image = cv2.imread(path)
         image = cv2.resize(image, (self.image_shape[1], self.image_shape[0]), interpolation=cv2.INTER_NEAREST)
         if flip:
@@ -33,9 +51,11 @@ class CustomGenerator(Sequence):
         return image
     
     def __len__(self):
+        """Number of batches to yield"""
         return np.ceil(len(self.image_fnames) / float(self.batch_size)).astype(np.int)
                        
     def __getitem__(self, idx):
+        """Yields the nth batch"""
         x_fnames = self.image_fnames[idx * self.batch_size:(idx+1) * self.batch_size]
         y_fnames = self.label_fnames[idx * self.batch_size:(idx+1) * self.batch_size]
         
