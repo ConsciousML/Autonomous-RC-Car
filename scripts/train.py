@@ -21,11 +21,24 @@ of the autonomous remote-controlled car.
 
 
 if __name__ == "__main__":
-    data_dir = "C:\Projects\SmartCar\data"
-    lr = 1e-4
-    batch_size = 16
-    output_dir = 'tmp' 
-    epochs = 3
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data_dir', type=str, default='data', nargs='?', 
+        help='The directory containing the training data.')
+    parser.add_argument('--out_dir', type=str, default='tmp', nargs='?', 
+        help='The output directory to store best model and training curves.')
+    parser.add_argument('--lr', type=float, default=1e-4, nargs='?', 
+        help='The learning rate.')
+    parser.add_argument('--batch_size', type=int, default=16, nargs='?', 
+        help='The batch size.')
+    parser.add_argument('--epochs', type=int, default=20, nargs='?', 
+        help='The number of epochs.')
+    args = parser.parse_args()
+
+    data_dir = args.data_dir
+    output_dir = args.out_dir
+    lr = args.lr
+    batch_size = args.batch_size
+    epochs = args.epochs
 
     now = datetime.now()
     dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
