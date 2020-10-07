@@ -8,7 +8,7 @@ of an input image to generate more data for training.
 
 """
 
-def augment_brightness(image):
+def randomize_brightness(image):
     """Returns the same image as the input with an randomly altered brightness
 
     Args:
