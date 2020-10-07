@@ -2,6 +2,12 @@
 import PCA9685 as servo
 import time                # Import necessary modules
 
+"""
+
+This function controls the car movement.
+
+"""
+
 last_dir = 0
 
 def Map(x, in_min, in_max, out_min, out_max):

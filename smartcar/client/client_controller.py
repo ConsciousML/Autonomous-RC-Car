@@ -16,14 +16,19 @@ from sklearn.externals import joblib
 import PIL
 
 
+"""
+
+Interface between the xbox controller and the rc car actions.
+
+"""
 ctrl_cmd = ['forward', 'backward', 'left', 'right', 'stop', 'read cpu_temp', 'home', 'distance', 'x+', 'x-', 'y+', 'y-', 'xy_home']
 
 
-HOST = '192.168.43.46'    # Laure (Ionis's Down) IP address
-HOST = '172.20.10.11'     # Thibaut (iPhone) IP address
+HOST = '192.168.43.46'
+HOST = '172.20.10.11'
 HOST = '192.168.1.26'
 PORT = 21567
-BUFSIZ = 1024             # buffer size
+BUFSIZ = 1024
 ADDR = (HOST, PORT)
 
 tcpCliSock = socket(AF_INET, SOCK_STREAM)   # Create a socket
@@ -58,14 +63,6 @@ def get_img(angle):
     print path
     cv2.imwrite(path, imgdec)
     Counter.i += 1
-
-'''
-def get_image():
-    img = tcpCliSock.recv()
-
-top.bin("<<GetImg>>", get_image)
-top.event_generate("<<GetImg>>", when="tail")
-'''
 
 def process_dir(dir):
     print dir
@@ -205,26 +202,9 @@ def ajust_buffer(string):
     return string
 
 def send_data_angle(tcpCliSock, data, angle, label, start_time):
-    """exec_time = time.time() - start_time
-    if (exec_time >= 0.1):
-        data = ajust_buffer(data)
-        tcpCliSock.send(data)
-        #print 'sent_data',data
-        tcpCliSock.recv(64)
-        label = normalize_label(label)
-        label = "%.4f" % label
-        str_label = str(label)
-        #print 'sent_label',label
-        data = 'OK' + label
-        data = ajust_buffer(data#)
-        tcpCliSock.send(data)
-        tcpCliSock.recv(64)
-        start_time = time.time()
-    else:"""
     data = ajust_buffer(data)
     tcpCliSock.send(data)
     tcpCliSock.recv(64)
-    #return start_time
 
 if __name__ == '__main__':
 	main()

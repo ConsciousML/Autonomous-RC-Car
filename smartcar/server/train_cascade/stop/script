@@ -1,1 +1,0 @@
-~/opencv-3.3.0/build/bin/opencv_traincascade -data class -vec out.vec -img pos/sign.png -bg list.txt -numPos 100 -numNeg 400 -numStages 10 -w 24 -h 24

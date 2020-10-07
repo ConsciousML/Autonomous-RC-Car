@@ -18,6 +18,12 @@ tcpSerSock.listen(5)     # The parameter of listen() defines the number of conne
 
 busnum = 1          # Edit busnum to 0, if you uses Raspberry Pi 1 or 0
 
+"""
+
+This files contains function that calibrates the car.
+
+"""
+
 def setup():
     global offset_x,  offset_y, offset, forward0, forward1
         offset_x = 0
