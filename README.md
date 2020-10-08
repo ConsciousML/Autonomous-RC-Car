@@ -6,7 +6,7 @@ The goal of this project was to build an autonomous remote controlled car using 
 The car is embedded with a Raspberry Pi and a Convolutional Neural Network (CNN) to predict in real-time the speed and the steering angle. We used an ultrasonic sensor to stop the car when encountering obstacles and another CNN for detecting stop signs.
 
 ## Demo
-You can find some videos of the car's performance in the directory `data/demo`.
+You can find some videos of the car's performance [here](https://github.com/ConsciousML/Autonomous-RC-Car/tree/master/data/demo).
 
 ## Installation
 Run the following line to create the appropriate conda environment:
