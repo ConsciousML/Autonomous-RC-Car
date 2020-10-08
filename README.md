@@ -26,3 +26,35 @@ We used the [SunFounder PiCar-S Kit V2.0 for Raspberry Pi with Raspberry Pi 4B a
 
 ## Data
 We included the data for the sign detection in the `data` folder but the images used to training the was too big to be pushed on github
+
+## Train your own model
+If you have your own data i.e (image, steering_angle, speed), we created a script that allows you to train you own model.
+In a given directory, the images should a the form `unique_id.jpg` and the label as the json file `unique_id.jpg`.
+The json file should have the following format:
+```json
+{
+  "angle" : 0.0,
+  "velocity": 0.0
+}
+```
+
+Then cd at the root of the project and run the training script:
+```bash
+python scripts/train_pilot.py --help
+```
+You will get the following output:
+```bash
+  -h, --help            show this help message and exit
+  --data_dir [DATA_DIR]
+                        The directory containing the training data.
+  --out_dir [OUT_DIR]   The output directory to store best model and training
+                        curves.
+  --lr [LR]             The learning rate.
+  --batch_size [BATCH_SIZE]
+                        The batch size.
+  --epochs [EPOCHS]     The number of epochs.
+```
+Fill these arguments according to your configuration, here is an examples:
+```bash
+python scripts/train_pilot.py --data_dir=data/tracks --out_dir=tmp --lr=1e-4 --batch_size=128 --epochs=20
+```

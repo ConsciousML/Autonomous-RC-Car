@@ -10,7 +10,7 @@ from sklearn.preprocessing import OneHotEncoder
 from keras.applications.mobilenet import preprocess_input
 from keras.utils import to_categorical
 
-def CustomCNN(dropout=0.0):
+def PilotCNN(dropout=0.0):
     """Builds and returns a custom Convolutional neural network
 
     Args:
