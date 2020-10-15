@@ -5,9 +5,13 @@
 The goal of this project was to build an autonomous remote controlled car using deep learning.
 The car is embedded with a Raspberry Pi and a Convolutional Neural Network (CNN) to predict in real-time the speed and the steering angle. We used an ultrasonic sensor to stop the car when encountering obstacles and another CNN for detecting stop signs.
 
-## Demo and Presentation
+## Version 1.0: SunFounder Car
+We used the [SunFounder PiCar-S Kit V2.0 for Raspberry Pi with Raspberry Pi 4B and TF card](https://www.sunfounder.com/picars-kit-with-raspberrypi.html) for the hardware. It costs around 180$ and can be built in an hour or two.
 The final presentation of this project can be found as a [pdf](https://github.com/ConsciousML/Autonomous-RC-Car/blob/master/data/slides/SmartCar.pdf) or a [powerpoint](https://github.com/ConsciousML/Autonomous-RC-Car/blob/master/data/slides/SmartCar.pptx) file.
-You can find some videos of the car's performance [here](https://github.com/ConsciousML/Autonomous-RC-Car/tree/master/data/demo).
+You can find some videos of the car's performance [here](https://github.com/ConsciousML/Autonomous-RC-Car/raw/master/data/demo/v1.0/driving.mp4).
+
+## Version 2.0: DonkeyCar kit + Generated data
+For the second version of this project we used the [DonkeyCar kit](https://www.donkeycar.com/) to build a faster and steadier car model. We generated some data using PIL by drawing lane lines on floor pictures. You can find the code of the data generator in `smartcar\simulator`. The version 2.0 is much better than the first version as you can see in this [video](https://github.com/ConsciousML/Autonomous-RC-Car/raw/master/data/demo/v2.0/driving_01.mp4).
 
 ## Installation
 Run the following line to create the appropriate conda environment:
@@ -21,11 +25,8 @@ The logic for the client-server is only working with the hardware used for this 
 We highly advise you to understand the `smartcar\learn` module for knowing how to train the model
 and the `smartcar\server\auto_drive.py` file for the autonomous driving logic.
 
-## Hardware
-We used the [SunFounder PiCar-S Kit V2.0 for Raspberry Pi with Raspberry Pi 4B and TF card](https://www.sunfounder.com/picars-kit-with-raspberrypi.html) for the hardware. It costs around 180$ and can be built in an hour or two.
-
 ## Data
-We included the data for the sign detection in the `data` folder but the images used to train the driving model the was too big to be pushed on github
+We included the data for the sign detection in the `data` folder but the images used to train the driving model the was too big to be pushed on github.
 
 ## Train your own model
 If you have your own data i.e (image, steering_angle, speed), we created a script that allows you to train you own model.
