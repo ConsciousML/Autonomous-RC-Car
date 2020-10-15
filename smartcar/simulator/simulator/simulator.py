@@ -29,10 +29,16 @@ class Simulator():
         self.input_images = None
 
     def add(self, layer):
+        """Adds a layer to the layer list"""
         self.layers.append(layer)
 
     def generate(self, n_examples, path):
+        """Generates the images
 
+        Args:
+            n_examples: A positive integer for the number of images to generate.
+            path: A string for the output path.
+        """
         if n_examples <= 0:
             raise ValueError('n_examples must be strictly positive, not {}'.format(n_examples))
         if len(self.layers) == 0:
@@ -57,7 +63,11 @@ class Simulator():
             new_img2.save(os.path.join(path, 'frame_' + str(i) + new_name2))
 
     def generate_one_image(self, img):
+        """Generates one image
 
+        Args:
+            img: A PIL image.
+        """
         if img is None:
             raise ValueError('img must be different from None')
 
@@ -86,7 +96,7 @@ class Simulator():
 
 
     def summary(self):
-
+        """Prints the summary of the generation"""
         summaries = [layer.summary() for layer in self.layers]
 
         s = 'Summary:\nNumber of layers: {}\n{}'.format(len(self.layers), '\n'.join(summaries))
