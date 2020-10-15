@@ -6,7 +6,8 @@ The goal of this project was to build an autonomous remote controlled car using 
 The car is embedded with a Raspberry Pi and a Convolutional Neural Network (CNN) to predict in real-time the speed and the steering angle. We used an ultrasonic sensor to stop the car when encountering obstacles and another CNN for detecting stop signs.
 
 ## Competition
-We participated in two IronCar competitions. Check out our best performance [here]().
+We participated to two competition. We got the 3rd at the [Iron Car Summer 2018](http://www.mylanderpages.com/ironcar2018/ironcar2018) and 
+1st at [RobotCar Winter 2018](https://www.meetup.com/DIY-Robocars-France/). Check out our best performance [here](https://github.com/ConsciousML/Autonomous-RC-Car/raw/master/data/demo/v2.0/competition_03.mp4).
 
 ## Version 1.0: SunFounder
 We used the [SunFounder PiCar-S Kit V2.0 for Raspberry Pi with Raspberry Pi 4B and TF card](https://www.sunfounder.com/picars-kit-with-raspberrypi.html) for the hardware. It costs around 180$ and can be built in an hour or two.
