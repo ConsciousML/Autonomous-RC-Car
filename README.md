@@ -15,7 +15,7 @@ The final presentation of this project can be found as a [pdf](https://github.co
 You can find some videos of the car's performance [here](https://github.com/ConsciousML/Autonomous-RC-Car/raw/master/data/demo/v1.0/driving.mp4).
 
 ## Version 2.0: DonkeyCar 
-For the second version of this project we used the [DonkeyCar kit](https://www.donkeycar.com/) to build a faster and steadier car model. We generated some data using PIL by drawing lane lines on floor pictures. You can find the code of the data generator in `smartcar\simulator`. The version 2.0 is much better than the first version as you can see in this [video](https://github.com/ConsciousML/Autonomous-RC-Car/raw/master/data/demo/v2.0/driving_01.mp4).
+For the second version of this project we used the [DonkeyCar kit](https://www.donkeycar.com/) to build a faster and steadier car model. We generated some data using PIL by drawing lane lines on floor pictures. You can find the code of the data generator in `smartcar\simulator`. The version 2.0 is much better than the first version as you can see in this [video](https://github.com/ConsciousML/Autonomous-RC-Car/raw/master/data/demo/v2.0/driving_01.mp4). Our university EPITA highlighted our project in this [article](https://www.epita.fr/2018/04/05/presentation-projets-fin-etudes-promotion-2018-smartcar-majeure-data-science-intelligence-artificielle-scia/).
 
 ## Installation
 Run the following line to create the appropriate conda environment:
