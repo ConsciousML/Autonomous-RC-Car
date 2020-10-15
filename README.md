@@ -5,9 +5,9 @@
 The goal of this project was to build an autonomous remote controlled car using deep learning.
 The car is embedded with a Raspberry Pi and a Convolutional Neural Network (CNN) to predict in real-time the speed and the steering angle. We used an ultrasonic sensor to stop the car when encountering obstacles and another CNN for detecting stop signs.
 
-## Competition
+## Championships
 We participated to two competition. We got the 3rd at the [Iron Car Summer 2018](http://www.mylanderpages.com/ironcar2018/ironcar2018) and 
-1st at [RobotCar Winter 2018](https://www.meetup.com/DIY-Robocars-France/). Check out our best performance [here](https://github.com/ConsciousML/Autonomous-RC-Car/raw/master/data/demo/v2.0/competition_03.mp4).
+1st at [RobotCars Winter 2018](https://www.meetup.com/DIY-Robocars-France/). Check out our best performance [here](https://github.com/ConsciousML/Autonomous-RC-Car/raw/master/data/demo/v2.0/competition_03.mp4).
 
 ## Version 1.0: SunFounder
 We used the [SunFounder PiCar-S Kit V2.0 for Raspberry Pi with Raspberry Pi 4B and TF card](https://www.sunfounder.com/picars-kit-with-raspberrypi.html) for the hardware. It costs around 180$ and can be built in an hour or two.
@@ -31,6 +31,13 @@ and the `smartcar\server\auto_drive.py` file for the autonomous driving logic.
 
 ## Data
 We included the data for the sign detection in the `data` folder but the images used to train the driving model the was too big to be pushed on github.
+
+## Generate your own data
+You can use our script to generate your own data. Get many pictures of the floor, put them in a directory and run the following command:
+```bash 
+python scripts/generate.py -i image_dir -n 10 -p output_dir
+```
+where `-i` option is for specifying the input data, `-p` the output directory and `-n` the number of images to generate.
 
 ## Train your own model
 If you have your own data i.e (image, steering_angle, speed), we created a script that allows you to train you own model.
