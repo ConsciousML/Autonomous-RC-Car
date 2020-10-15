@@ -1,5 +1,4 @@
 # Autonomous Remote Controlled Car
-![title](data/images/smartcar.jpg)
 
 ## Objective
 The goal of this project was to build an autonomous remote controlled car using deep learning.
@@ -10,11 +9,13 @@ We participated to two competition. We got 3rd at [Iron Car Summer 2018](http://
 1st at [RobotCars Winter 2018](https://www.meetup.com/DIY-Robocars-France/). Check out our best performance [here](https://github.com/ConsciousML/Autonomous-RC-Car/raw/master/data/demo/v2.0/competition_03.mp4).
 
 ## Version 1.0: SunFounder
+![title](data/images/v01.jpg)
 We used the [SunFounder PiCar-S Kit V2.0 for Raspberry Pi with Raspberry Pi 4B and TF card](https://www.sunfounder.com/picars-kit-with-raspberrypi.html) for the hardware. It costs around 180$ and can be built in an hour or two.
 The final presentation of this project can be found as a [pdf](https://github.com/ConsciousML/Autonomous-RC-Car/blob/master/data/slides/SmartCar.pdf) or a [powerpoint](https://github.com/ConsciousML/Autonomous-RC-Car/blob/master/data/slides/SmartCar.pptx) file.
 You can find some videos of the car's performance [here](https://github.com/ConsciousML/Autonomous-RC-Car/raw/master/data/demo/v1.0/driving.mp4).
 
 ## Version 2.0: DonkeyCar 
+![title](data/images/v02.jpg)
 For the second version of this project we used the [DonkeyCar kit](https://www.donkeycar.com/) to build a faster and steadier car model. We generated some data using PIL by drawing lane lines on floor pictures. You can find the code of the data generator in `smartcar\simulator`. The version 2.0 is much better than the first version as you can see in this [video](https://github.com/ConsciousML/Autonomous-RC-Car/raw/master/data/demo/v2.0/driving_01.mp4). Our university EPITA highlighted our project in this [article](https://www.epita.fr/2018/04/05/presentation-projets-fin-etudes-promotion-2018-smartcar-majeure-data-science-intelligence-artificielle-scia/).
 
 ## Installation
