@@ -98,6 +98,5 @@ class Simulator():
     def summary(self):
         """Prints the summary of the generation"""
         summaries = [layer.summary() for layer in self.layers]
-
         s = 'Summary:\nNumber of layers: {}\n{}'.format(len(self.layers), '\n'.join(summaries))
         return s
