@@ -23,6 +23,7 @@ class Crop(Layer):
         self.name = name
 
     def call(self, img):
+        """Transforms the image"""
         if img is None: raise ValueError('img is None')
 
         width = img.width

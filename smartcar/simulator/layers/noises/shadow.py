@@ -5,7 +5,6 @@ from .noise import Noise
 
 
 class Shadows(Noise):
-
     '''
         Adds shadows to the image.
     '''
@@ -23,7 +22,7 @@ class Shadows(Noise):
         self.name = name
 
     def call(self, img):
-
+        """Transforms the image"""
         if img is None:
             raise ValueError('img is None')
 

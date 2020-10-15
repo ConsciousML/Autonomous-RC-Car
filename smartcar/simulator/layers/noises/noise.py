@@ -2,9 +2,8 @@ from ..layer import Layer
 
 
 class Noise(Layer):
-
     '''
-        Root Object of Noise.
+        Root object of Noise.
         By default, identity layer.
     '''
 

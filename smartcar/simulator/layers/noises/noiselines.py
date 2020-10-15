@@ -5,13 +5,11 @@ from .noise import Noise
 
 
 class NoiseLines(Noise):
-
     '''
         Adds noise lines to the image i.e. lines randomly on the picture.
     '''
 
     def __init__(self, color_range, n_lines_max=1, proba_line=0.33, name='NoiseLines'):
-
         if name is None:
             raise ValueError('')
         if color_range is None:
@@ -33,6 +31,7 @@ class NoiseLines(Noise):
 
 
     def call(self, img):
+        """Transforms the image"""
 
         def draw_line_dep(im, x1, y1, x2, y2, fill, width=1):
             draw = ImageDraw.Draw(im)

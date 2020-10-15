@@ -5,9 +5,8 @@ from .noise import Noise
 
 
 class Filter(Noise):
-
     '''
-        Adds filters to the image.
+        Blurs the image.
     '''
 
     def __init__(self, blur=0, gauss_blur=0, smooth=0, smooth_more=0, rank_filter=0, name='Filter'):
@@ -31,7 +30,7 @@ class Filter(Noise):
         self.name = name
 
     def call(self, img):
-
+        """Transform the image"""
         if img is None: raise ValueError('img is None')
 
         im_n = img.copy()

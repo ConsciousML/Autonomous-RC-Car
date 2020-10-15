@@ -5,13 +5,11 @@ from ....utils.image_operations import BrightnessMask, generate_shape
 
 
 class Shape(Noise):
-
     """
         Adds shape filters to the image.
     """
 
     def __init__(self, brightness=0, name='Shape'):
-
         if name is None:
             raise ValueError()
         if not all([item is not None and (isinstance(item, float) or isinstance(item, int)) for item in [brightness]]):
@@ -26,7 +24,7 @@ class Shape(Noise):
         self.brightness = brightness
 
     def call(self, img):
-
+        """Transforms the image"""
         if img is None:
             raise ValueError('img is None')
 
