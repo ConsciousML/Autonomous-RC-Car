@@ -1,9 +1,8 @@
-from layers import Layer
-from utils import find_coeffs
-
 from PIL import Image
-
 from random import random
+
+from ..layer import Layer
+from ....utils import find_coeffs
 
 
 class Symmetric(Layer):

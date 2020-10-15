@@ -1,8 +1,7 @@
-from layers.noises.noise import Noise
-
 from PIL import ImageFilter
-
 from random import random
+
+from .noise import Noise
 
 
 class Filter(Noise):

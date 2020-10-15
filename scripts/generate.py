@@ -1,11 +1,14 @@
 #! /usr/bin/python3
 
-from layers import Background, DrawLines, Perspective, Crop, Symmetric
-from layers.noises import Shadows, Filter, NoiseLines, Enhance, Shape
-from simulator import Simulator
-from utils.colors import White, DarkShadow, Yellow, Blue, Green, Red
-
+import os
+import sys
 import argparse
+sys.path.append(os.getcwd())
+
+from smartcar.simulator.layers import Background, DrawLines, Perspective, Crop, Symmetric
+from smartcar.simulator.layers.noises import Shadows, Filter, NoiseLines, Enhance, Shape
+from smartcar.simulator.simulator import Simulator
+from smartcar.utils.colors import White, DarkShadow, Yellow, Blue, Green, Red
 
 
 white = White()

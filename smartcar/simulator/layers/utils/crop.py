@@ -1,5 +1,4 @@
-from layers import Layer
-
+from ..layer import Layer
 
 class Crop(Layer):
     '''This layer crops the image.'''

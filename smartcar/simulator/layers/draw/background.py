@@ -1,4 +1,4 @@
-from layers.layer import Layer
+from ..layer import Layer
 
 from tqdm import tqdm
 from PIL import Image

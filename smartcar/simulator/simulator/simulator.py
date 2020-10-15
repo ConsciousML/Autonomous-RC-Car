@@ -3,7 +3,9 @@ import os
 from random import randint
 from tqdm import tqdm
 
-from layers import Background, DrawLines, Symmetric, Layer
+from ..layers.draw import Background, DrawLines
+from ..layers.utils.symmetric import Symmetric
+from ..layers.layer import Layer
 
 
 class Simulator():

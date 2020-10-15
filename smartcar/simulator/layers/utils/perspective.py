@@ -1,5 +1,5 @@
-from layers import Layer 
-from utils import find_coeffs
+from ..layer import Layer 
+from ....utils import find_coeffs
 
 from PIL import Image
 

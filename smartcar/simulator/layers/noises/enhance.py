@@ -1,4 +1,4 @@
-from layers.noises.noise import Noise
+from .noise import Noise
 
 from PIL import ImageEnhance
 

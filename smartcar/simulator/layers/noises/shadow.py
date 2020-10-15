@@ -1,8 +1,7 @@
-from layers.noises.noise import Noise
-
 from PIL import ImageDraw
-
 from random import choice, randint
+
+from .noise import Noise
 
 
 class Shadows(Noise):

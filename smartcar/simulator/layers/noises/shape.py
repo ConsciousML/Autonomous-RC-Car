@@ -1,7 +1,7 @@
-from layers.noises import Noise
-from utils.image_operations import BrightnessMask, generate_shape
-
 from random import randint, random
+
+from .noise import Noise
+from ....utils.image_operations import BrightnessMask, generate_shape
 
 
 class Shape(Noise):

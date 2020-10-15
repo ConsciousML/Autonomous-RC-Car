@@ -1,12 +1,11 @@
-from layers.layer import Layer
-from utils.basic_objects import Circle, Point, RoadLine
-from utils.colors import Yellow, White
-
 import numpy as np
 from PIL import ImageDraw
-
 from math import atan2, pi, sqrt
 from random import choice, gauss, randint, random
+
+from ..layer import Layer
+from ....utils.basic_objects import Circle, Point, RoadLine
+from ....utils.colors import Yellow, White
 
 
 class DrawLines(Layer):

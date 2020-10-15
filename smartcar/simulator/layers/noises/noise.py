@@ -1,4 +1,4 @@
-from layers import Layer
+from ..layer import Layer
 
 
 class Noise(Layer):
