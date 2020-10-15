@@ -1,51 +1,39 @@
-from ..layer import Layer
-
+import os
 from tqdm import tqdm
 from PIL import Image
-
-import os
 from random import randint, shuffle
+
+from ..layer import Layer
 
 
 class Background(Layer):
-    '''This layer is an input layer.
+    '''The class for an input layer i.e a picture of the floor
+
     It generates the inputs from background images.
+
     '''
 
     def __init__(self, n_backgrounds, path, n_rot=1, n_res=1, n_crop=1,
                     input_size=(250, 200), output_size=(250, 70),
                     width_range=None, angle_max=20, name='Background'):
         """
-
-        Arguments:
-            n_backgrounds: An integer,
-                the number of backgrounds.
-            path: A string,
-                the path to the folder where background images
+        Args:
+            n_backgrounds: An integer for the number of backgrounds.
+            path: A string for the path to the folder where background images
                 are stocked.
-            n_rot: A > 0 integer,
-                the number of backgrounds to generate
+            n_rot: A positive integer for the number of backgrounds to generate
                 by rotating the existing background.
-            n_res: A > 0 integer,
-                the number of backgrounds to generate
+            n_res: A positive integer for the number of backgrounds to generate
                 by resizing the existing background.
-            n_crop: A > 0 integer,
-                the number of backgrounds to generate
+            n_crop: A positive integer for the number of backgrounds to generate
                 by cropping the existing background.
-            input_size:
-
-            output_size:
-
-            width_range:
-
-            angle_max:
-
-            name: a string,
-                the name of the layer
+            input_size: A tuple for the shape of the input image.
+            output_size: A tuple for the shape of the output image.
+            width_range: A integer for overriding the width of the image. 
+            angle_max: A float for the maximum angle to generate.
+            name: A string for the name of the layer
         """
 
-        # TODO: how to decrease the amount of ValueError ?
-        # TODO: how to increase readibility ?
         if width_range is None:
             width_range = [i for i in range(output_size[0], output_size[0] + 500)]
         if name is None:
@@ -70,11 +58,6 @@ class Background(Layer):
             raise ValueError('input_size must be 2 dimensional: `{}`'.format(len(input_size)))
         if not isinstance(width_range, list) or len(width_range) == 0:
             raise ValueError('width_range must be a non-empty list or None')
-        if max(width_range) < input_size[0]:
-            # Because resizing during generation needs to be done on a higher
-            # width
-            # TODO: not a good test
-            raise ValueError('TODO')
 
         super(Background, self).__init__()
 
@@ -167,6 +150,5 @@ class Background(Layer):
 
     def summary(self):
         """Returns a string describing the layer"""
-
         return '{}\t{}\t{}\t{}\t{}'.format(self.name, self.n_backgrounds,
                                             self.n_res, self.n_rot, self.n_crop)
