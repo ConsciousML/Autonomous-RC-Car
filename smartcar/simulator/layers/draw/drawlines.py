@@ -85,7 +85,6 @@ class DrawLines(Layer):
         self.obstacle_color_ranges = obstacle_color_ranges
 
         # Is there a VISIBLE middle line ? (the middle line always exists)
-        # TODO: quite complex to have a 3-tuple for middle_line...
         if middle_line is not None:
             self.middle_line_plain = middle_line[0]
             self.middle_line_empty = middle_line[1]
@@ -122,10 +121,6 @@ class DrawLines(Layer):
                                                 self.thickness_range,
                                                 self.middle_line_color_range)
 
-            # TODO: change this so that the distance between the 2 lines can be chosen
-            # by the user
-            # 200: harcoded value
-            # 100: harcoded value
             width = randint(max(200, 2 * midline.x0 - self.width), self.max_width)
 
             # Draw all the visible lines
@@ -316,9 +311,7 @@ class DrawLines(Layer):
 
         Arguments:
             draw: A `PIL.Draw` object.
-
             circle: A `Circle` object.
-
         """
 
         thickness = circle.thickness
@@ -473,5 +466,4 @@ class DrawLines(Layer):
 
     def summary(self):
         """Returns a string describing this layer"""
-
         return '{}'.format(self.name)
