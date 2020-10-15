@@ -69,7 +69,6 @@ def generate(n_examples, input_path, output_path, n_backgrounds=50):
 
 
 if __name__ == '__main__':
-
     """
     /!\ Note that generator will generate 2 times the number of
         images asked for because of the symmetric layer so if you write 200 it

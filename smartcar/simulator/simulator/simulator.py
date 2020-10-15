@@ -9,13 +9,15 @@ from ..layers.layer import Layer
 
 
 class Simulator():
+    '''The simulator is composed by a list of transforming layers
 
-    '''
-        The simulator is most importantly a list of layers.
+    Attributes:
+        layers: A list of Layer objects.
+        input_images: A list of input images.
     '''
 
     def __init__(self, layers=None):
-
+        """Sets the layers attribute"""
         if layers is None:
             layers = []
         if not isinstance(layers, list):
